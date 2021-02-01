@@ -1580,47 +1580,48 @@ class EstructurasBiessController extends ControladorBase{
 		    
 		    $i = 0;
 		    
-		    $columnas = "numero_registro
-                            tipo_identificacion_participe
-                            identificacion_participe
-                            numero_operacion_de_credito
-                            estado_operacion
-                            estado_del_prestamo
-                            tasa_interes
-                            fecha_vencimiento_cuota
-                            valor_del_credito_total
-                            valor_cuota_mensual_del_capital
-                            valor_seguro_desgravamen_mensual
-                            valor_interes_mensual
-                            fecha_pago
-                            numero_cuota_pagada
-                            numero_cuota_pendientes_de_pago
-                            valor_de_la_cuota_pagado_por_el_participe_mensual
-                            valor_de_capital_pagado_por_el_participe_mensual
-                            valor_abono_prestamo
-                            saldo_de_capital
-                            saldo_del_interes
-                            monto_total_pagado
-                            monto_total_abonado
-                            intereses_por_cobrar
-                            estado_del_vencimiento_o_liquidacion
-                            dias_morosidad
-                            cuotas_vencidas
-                            interes_sobre_mora
-                            monto_vencido_del_credito
-                            valor_vencido
-                            valor_no_devenga_interes
-                            valor_demanda_judicial
-                            monto_cartera_castigada
-                            provision
-                            provision_acumulada
-                            fecha_de_cancelacion
+		    $columnas = "numero_registro,
+                            tipo_identificacion_participe,
+                            identificacion_participe,
+                            numero_operacion_de_credito,
+                            estado_operacion,
+                            estado_del_prestamo,
+                            tasa_interes,
+                            fecha_vencimiento_cuota,
+                            valor_del_credito_total,
+                            valor_cuota_mensual_del_capital,
+                            valor_seguro_desgravamen_mensual,
+                            valor_interes_mensual,
+                            fecha_pago,
+                            numero_cuota_pagada,
+                            numero_cuota_pendientes_de_pago,
+                            valor_de_la_cuota_pagado_por_el_participe_mensual,
+                            valor_de_capital_pagado_por_el_participe_mensual,
+                            valor_abono_prestamo,
+                            saldo_de_capital,
+                            saldo_del_interes,
+                            monto_total_pagado,
+                            monto_total_abonado,
+                            intereses_por_cobrar,
+                            estado_del_vencimiento_o_liquidacion,
+                            dias_morosidad,
+                            cuotas_vencidas,
+                            interes_sobre_mora,
+                            monto_vencido_del_credito,
+                            valor_vencido,
+                            valor_no_devenga_interes,
+                            valor_demanda_judicial,
+                            monto_cartera_castigada,
+                            provision,
+                            provision_acumulada,
+                            fecha_de_cancelacion,
                             forma_de_cancelacion";
-		    $tablas = "fc_biess_g46('1900-01-01' ::date , '2019-12-31' :: date )";
-		    
+		    $tablas = "core_g46_biess";
+		    $id = "id_biess_g46 ";
+		    $where = " mes_biess_g46 = 12 and anio_biess_g46 = 2019";
 		    $html= "";
 		    
-		    $resultSet=$G46->getCondicionesFunciones($columnas, $tablas);
+		    $resultSet=$G46->getCondiciones($columnas, $tablas, $where, $id);
 		    
 		    if(!empty($resultSet))
 		    {
@@ -1768,11 +1769,11 @@ class EstructurasBiessController extends ControladorBase{
 		public function generaG46(){
 		    
 		    
-		    $G45= new G45Model();
+		    $G46= new G46Model();
 		    //$id_usuarios=$_SESSION['id_usuarios'];
 		    $mes_reporte=  12;//     $_POST['mes_reporte'];
 		    
-		    $anio_reporte= 2020; //     $_POST['anio_reporte'];
+		    $anio_reporte= 2019; //     $_POST['anio_reporte'];
 		    
 		    
 		    
@@ -1813,59 +1814,68 @@ class EstructurasBiessController extends ControladorBase{
 		    $_fecha_de_cancelacion;
 		    $_forma_de_cancelacion;
 		    
+		    
+		    
+		    $fecha =  "01/".$mes_reporte."/".$anio_reporte;
+		    $anio_mes = $anio_reporte.'-'.$mes_reporte;
+		    $aux = date('Y-m-d', strtotime("{$anio_mes} + 1 month"));
+		    $last_day = date('Y-m-d', strtotime("{$aux} - 1 day"));
+		    $newDate_fechacorte = date("d/m/Y", strtotime($last_day));
+		    
+		    
 		    $i = 0;
 		    
-		    $columnas = "numero_registro
-                            tipo_identificacion_participe
-                            identificacion_participe
-                            numero_operacion_de_credito
-                            estado_operacion
-                            estado_del_prestamo
-                            tasa_interes
-                            fecha_vencimiento_cuota
-                            valor_del_credito_total
-                            valor_cuota_mensual_del_capital
-                            valor_seguro_desgravamen_mensual
-                            valor_interes_mensual
-                            fecha_pago
-                            numero_cuota_pagada
-                            numero_cuota_pendientes_de_pago
-                            valor_de_la_cuota_pagado_por_el_participe_mensual
-                            valor_de_capital_pagado_por_el_participe_mensual
-                            valor_abono_prestamo
-                            saldo_de_capital
-                            saldo_del_interes
-                            monto_total_pagado
-                            monto_total_abonado
-                            intereses_por_cobrar
-                            estado_del_vencimiento_o_liquidacion
-                            dias_morosidad
-                            cuotas_vencidas
-                            interes_sobre_mora
-                            monto_vencido_del_credito
-                            valor_vencido
-                            valor_no_devenga_interes
-                            valor_demanda_judicial
-                            monto_cartera_castigada
-                            provision
-                            provision_acumulada
-                            fecha_de_cancelacion
+		    
+		    $columnas = "numero_registro,
+                            tipo_identificacion_participe,
+                            identificacion_participe,
+                            numero_operacion_de_credito,
+                            estado_operacion,
+                            estado_del_prestamo,
+                            tasa_interes,
+                            fecha_vencimiento_cuota,
+                            valor_del_credito_total,
+                            valor_cuota_mensual_del_capital,
+                            valor_seguro_desgravamen_mensual,
+                            valor_interes_mensual,
+                            fecha_pago,
+                            numero_cuota_pagada,
+                            numero_cuota_pendientes_de_pago,
+                            valor_de_la_cuota_pagado_por_el_participe_mensual,
+                            valor_de_capital_pagado_por_el_participe_mensual,
+                            valor_abono_prestamo,
+                            saldo_de_capital,
+                            saldo_del_interes,
+                            monto_total_pagado,
+                            monto_total_abonado,
+                            intereses_por_cobrar,
+                            estado_del_vencimiento_o_liquidacion,
+                            dias_morosidad,
+                            cuotas_vencidas,
+                            interes_sobre_mora,
+                            monto_vencido_del_credito,
+                            valor_vencido,
+                            valor_no_devenga_interes,
+                            valor_demanda_judicial,
+                            monto_cartera_castigada,
+                            provision,
+                            provision_acumulada,
+                            fecha_de_cancelacion,
                             forma_de_cancelacion";
-		    $tablas = "fc_biess_g46('1900-01-01' ::date , '2019-12-31' :: date )";
+		    $tablas = "core_g46_biess";
+		    $id = "id_biess_g46 ";
+		    $where = " mes_biess_g46 = $mes_reporte and anio_biess_g46 = $anio_reporte ";
+		    $html= "";
+		    
+		    
+		    
+		    $resultSet=$G46->getCondiciones($columnas, $tablas, $where, $id);
 		    
 		    
 		    $html= "";
-		    
-		    $resultSet=$G45->getCondicionesFunciones($columnas, $tablas);
 		    $texto ='';
 		    
 		    if(!empty($resultSet)){
-		        
-		        
-		        
-		        
-		        
-		        
 		        
 		        //	$fecha_corte = $G41->ultimo_dia_mes_fecha($fecha);
 		        $cantidad_lineas = count($resultSet)  + 1;
@@ -1882,9 +1892,44 @@ class EstructurasBiessController extends ControladorBase{
 		        $texto .='<?xml version="1.0" encoding="UTF-8"?>';
 		        $texto .= '<REGISTROS>';
 		        $texto .= '<DatosEstructura>';
-		        $texto .= '<CodigoEstructura>G45</CodigoEstructura>';
+		        $texto .= '<CodigoEstructura>G46</CodigoEstructura>';
 		        $texto .= '<CodigoEntidad>17</CodigoEntidad>';
 		        $texto .= '<FechaCorte>'.$newDate_fechacorte.'</FechaCorte>';
+		        
+		        $iCant = 0;
+		        foreach($resultSet as $res)
+		        {
+		            
+		            if ($res->identificacion_participe == '0923951800' || $res->identificacion_participe == '1704259470' || $res->identificacion_participe == '1710230531' )
+		            {
+		                
+		            }
+		            else
+		            {
+		                $columnas46   = " id_estado_participes ";
+		                $tablas46     = "core_participes";
+		                $where46      = "cedula_participes = '$res->identificacion_participe'   AND id_estado_participes = 5   ";
+		                $id46         = "id_estado_participes";
+		                
+		                
+		                $resultSetPar=$G46->getCondiciones($columnas46, $tablas46, $where46, $id46);
+		                
+		                $cantidad_li = count($resultSetPar);
+		                if ($cantidad_li > 0)
+		                {
+		                    
+		                }
+		                else
+		                {
+		                  $iCant++;
+		                }
+		                
+		            }
+		        }
+		       
+		        $cantidad_lineas = $iCant  + 1;
+		        
+		        
 		        $texto .= '<TotalRegistros>'.$cantidad_lineas.'</TotalRegistros>';
 		        
 		        $texto .= '</DatosEstructura>';
@@ -1893,89 +1938,257 @@ class EstructurasBiessController extends ControladorBase{
 		        foreach($resultSet as $res)
 		        {
 		            
-		            if ($res->identificacion_participe == '1704259470' || $res->identificacion_participe == '1710230531' )
+		            if ($res->identificacion_participe == '0923951800' || $res->identificacion_participe == '1704259470' || $res->identificacion_participe == '1710230531' )
 		            {
 		                
 		            }
 		            else
 		            {
-		                $i++;
 		                
-		                $_numero_registro                     = $i;
-		                //$_numero_registro                                 =  $res->numero_registro;
-		                $_tipo_identificacion_participe                   =  $res->tipo_identificacion_participe;
-		                $_identificacion_participe                        =  $res->identificacion_participe;
-		                $_numero_operacion_de_credito                     =  $res->numero_operacion_de_credito;
-		                $_estado_operacion                                =  $res->estado_operacion;
-		                $_estado_del_prestamo                             =  $res->estado_del_prestamo;
-		                $_tasa_interes                                    =  $res->tasa_interes;
-		                $_fecha_vencimiento_cuota                         =  date("d/m/Y", strtotime($res->fecha_vencimiento_cuota));
-		                $_valor_del_credito_total                         =  $res->valor_del_credito_total;
-		                $_valor_cuota_mensual_del_capital                 =  $res->valor_cuota_mensual_del_capital;
-		                $_valor_seguro_desgravamen_mensual                =  $res->valor_seguro_desgravamen_mensual;
-		                $_valor_interes_mensual                           =  $res->valor_interes_mensual;
-		                $_fecha_pago                                      =  date("d/m/Y", strtotime($res->fecha_pago));
-		                $_numero_cuota_pagada                             =  $res->numero_cuota_pagada;
-		                $_numero_cuota_pendientes_de_pago                     =  $res->numero_cuota_pendientes_de_pago;
-		                $_valor_de_la_cuota_pagado_por_el_participe_mensual   =  $res->valor_de_la_cuota_pagado_por_el_participe_mensual;
-		                $_valor_de_capital_pagado_por_el_participe_mensual    =  $res->valor_de_capital_pagado_por_el_participe_mensual;
-		                $_valor_abono_prestamo                                =  $res->valor_abono_prestamo;
-		                $_saldo_de_capital                                    =  $res->saldo_de_capital;
-		                $_saldo_del_interes                                   =  $res->saldo_del_interes;
-		                $_monto_total_pagado                                  =  $res->monto_total_pagado;
-		                $_monto_total_abonado                                 =  $res->monto_total_abonado;
-		                $_intereses_por_cobrar                                =  $res->intereses_por_cobrar;
-		                $_estado_del_vencimiento_o_liquidacion                =  $res->estado_del_vencimiento_o_liquidacion;
-		                $_dias_morosidad                                      =  $res->dias_morosidad;
-		                $_cuotas_vencidas                                     =  $res->cuotas_vencidas;
-		                $_interes_sobre_mora                                  =  $res->interes_sobre_mora;
-		                $_monto_vencido_del_credito                           =  $res->monto_vencido_del_credito;
-		                $_valor_vencido                                       =  $res->valor_vencido;
-		                $_valor_no_devenga_interes                            =  $res->valor_no_devenga_interes;
-		                $_valor_demanda_judicial                              =  $res->valor_demanda_judicial;
-		                $_monto_cartera_castigada                             =  $res->monto_cartera_castigada;
-		                $_provision                                           =  $res->provision;
-		                $_provision_acumulada                                 =  $res->provision_acumulada;
-		                $_fecha_de_cancelacion                                =  date("d/m/Y", strtotime($res->fecha_de_cancelacion));
-		                $_forma_de_cancelacion                                =  date("d/m/Y", strtotime($res->forma_de_cancelacion));
+		                $columnas46   = " id_estado_participes "; 
+		                $tablas46     = "core_participes"; 
+		                $where46      = "cedula_participes = '$res->identificacion_participe'   AND id_estado_participes = 5   ";     
+		                $id46         = "id_estado_participes";
 		                
-		                $texto .= '<Registro NumeroRegistro="'. $i.'">';
-		                $texto .= '<TipoIdentificacionParticipe>'.$_tipo_identificacion_participe.'</TipoIdentificacionParticipe>';
-		                $texto .= '<IdentificacionParticipe>'.$_identificacion_participe.'</IdentificacionParticipe>';
-		                $texto .= '<NumeroOpeCred>OP-'.$_numero_operacion_de_credito.'</NumeroOpeCred>';
-		                $texto .= '<EstadoOper>'.$_estado_operacion.'</EstadoOper>';
-		                $texto .= '<EstadoPresta>'.$_estado_del_prestamo.'</EstadoPresta>';
-		                $texto .= '<TasaInteres>'.$_tasa_interes.'</TasaInteres>';
-		                $texto .= '<FechaVencCuota>'.$_fecha_vencimiento_cuota.'</FechaVencCuota>';
-		                $texto .= '<ValorCreditoTotal>'.$_valor_del_credito_total.'</ValorCreditoTotal>';
-		                $texto .= '<ValorCuotaMenCap>'.$_valor_cuota_mensual_del_capital.'</ValorCuotaMenCap>';
-		                $texto .= '<ValorSegDesgravamenMen>'.$_valor_seguro_desgravamen_mensual.'</ValorSegDesgravamenMen>';
-		                $texto .= '<ValorInteresmensual>'.$_valor_interes_mensual.'</ValorInteresmensual>';
-		                $texto .= '<FechaPago>'.$_fecha_pago.'/FechaPago>';
-		                $texto .= '<CuotaPagada>'.$_numero_cuota_pagada.'</CuotaPagada>';
-		                $texto .= ' <CuotapendientesPago>'.$_numero_cuota_pendientes_de_pago.'</CuotapendientesPago>';
-		                $texto .= '<ValorCuotaPagPM>'.$_valor_de_la_cuota_pagado_por_el_participe_mensual.'</ValorCuotaPagPM>';
-		                $texto .= '<ValorcapPagPM>'.$_valor_de_capital_pagado_por_el_participe_mensual.'</ValorcapPagPM>';
-		                $texto .= '<ValorAbonoPrestamo>'.$_valor_abono_prestamo.'</ValorAbonoPrestamo>';
-		                $texto .= '<SaldoCapital>'.$_saldo_de_capital.'</SaldoCapital>';
-		                $texto .= '<Saldointeres>'.$_saldo_del_interes.'</Saldointeres>';
-		                $texto .= '<MontoTotPagado>'.$_monto_total_pagado.'</MontoTotPagado>';
-		                $texto .= '<MontoTotAbonado>'.$_monto_total_abonado.'</MontoTotAbonado>';
-		                $texto .= '<Interesescobrar>'.$_intereses_por_cobrar.'</Interesescobrar>';
-		                $texto .= '<EstadoVencLiqui>'.$_estado_del_vencimiento_o_liquidacion.'</EstadoVencLiqui>';
-		                $texto .= '<DiasMorosidad>'.$_dias_morosidad.'</DiasMorosidad> ';
-		                $texto .= ' <Cuotasvencidas>'.$_cuotas_vencidas.'</Cuotasvencidas> ';
-		                $texto .= ' <InteresMora>'.$_interes_sobre_mora.'</InteresMora>';
-		                $texto .= ' <MontoVencCredito>'.$_monto_vencido_del_credito.'</MontoVencCredito>';
-		                $texto .= ' <ValorVencido>'.$_valor_vencido.'</ValorVencido>';
-		                $texto .= ' <ValorNoDevengaInteres>'.$_valor_no_devenga_interes.'</ValorNoDevengaInteres>';
-		                $texto .= ' <ValorDemandaJudicial>'.$_valor_demanda_judicial.'</ValorDemandaJudicial>';
-		                $texto .= ' <Provision>'.$_provision.'</Provision>';
-		                $texto .= ' <ProvisionAcum>'.$_provision_acumulada.'</ProvisionAcum>';
-		                $texto .= ' <Fechacancelacion>'.$_fecha_de_cancelacion.'</Fechacancelacion> ';
-		                $texto .= ' <Formacancelacion>'.$_forma_de_cancelacion.'</Formacancelacion> ';
 		                
-		                $texto .= '</Registro>';
+		                $resultSetPar=$G46->getCondiciones($columnas46, $tablas46, $where46, $id46);
+		                
+		                $cantidad_li = count($resultSetPar);
+		                if ($cantidad_li > 0)
+		                {
+		                    
+		                }
+		                else 
+		                {
+		                
+		                    
+		                    
+		                    
+		                    $i++;
+		                    
+		                    $_numero_registro                     = $i;
+		                    //$_numero_registro                                 =  $res->numero_registro;
+		                    $_tipo_identificacion_participe                   =  $res->tipo_identificacion_participe;
+		                    $_identificacion_participe                        =  $res->identificacion_participe;
+		                    $_numero_operacion_de_credito                     =  'CAP' . $res->numero_operacion_de_credito;
+		                    $_estado_operacion                                =  $res->estado_operacion;
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_estado_del_prestamo                             =  'VENCIDA';
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_estado_del_prestamo                             =  $res->estado_del_prestamo;
+		                        
+		                    }
+		                    $_tasa_interes                                    =  $res->tasa_interes;
+		                    $_fecha_vencimiento_cuota                         =  date("d/m/Y", strtotime($res->fecha_vencimiento_cuota));
+		                    $_valor_del_credito_total                         =  $res->valor_del_credito_total;
+		                    $_valor_cuota_mensual_del_capital                 =  $res->valor_cuota_mensual_del_capital;
+		                    $_valor_seguro_desgravamen_mensual                =  $res->valor_seguro_desgravamen_mensual;
+		                    $_valor_interes_mensual                           =  $res->valor_interes_mensual;
+		                    $_fecha_pago                                      =  date("d/m/Y", strtotime($res->fecha_pago));
+		                    $_numero_cuota_pagada                             =  $res->numero_cuota_pagada;
+		                    $_numero_cuota_pendientes_de_pago                     =  $res->numero_cuota_pendientes_de_pago;
+		                    $_valor_de_la_cuota_pagado_por_el_participe_mensual   =  $res->valor_de_la_cuota_pagado_por_el_participe_mensual;
+		                    $_valor_de_capital_pagado_por_el_participe_mensual    =  $res->valor_de_capital_pagado_por_el_participe_mensual;
+		                    
+		                    if ($res->valor_abono_prestamo < 0)
+		                    {
+		                        $_valor_abono_prestamo                                =  '0';
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_valor_abono_prestamo                                =  $res->valor_abono_prestamo;
+		                        
+		                    }
+		                    $_saldo_de_capital                                    =  $res->saldo_de_capital;
+		                    $_saldo_del_interes                                   =  $res->saldo_del_interes;
+		                    $_monto_total_pagado                                  =  $res->monto_total_pagado;
+		                    $_monto_total_abonado                                 =  $res->monto_total_abonado;
+		                    $_intereses_por_cobrar                                =  $res->intereses_por_cobrar;
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_estado_del_vencimiento_o_liquidacion                =  $res->estado_del_vencimiento_o_liquidacion;
+		                    }
+		                    else
+		                    {
+		                        $_estado_del_vencimiento_o_liquidacion                =  '';
+		                        
+		                    }
+		                    
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_dias_morosidad                                      =  $res->dias_morosidad;
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_dias_morosidad                                      =  '';
+		                        
+		                    }
+		                    
+		                    
+		                    
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_cuotas_vencidas                                     =  $res->cuotas_vencidas;
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_cuotas_vencidas                                     =  '';
+		                        
+		                    }
+		                    
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_interes_sobre_mora                                  =  $res->interes_sobre_mora;
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_interes_sobre_mora                                  =  '';
+		                        
+		                    }
+		                    
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_monto_vencido_del_credito                           =  $res->monto_vencido_del_credito;
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_monto_vencido_del_credito                                  =  '';
+		                        
+		                    }
+		                    
+		                    
+		                    
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_valor_vencido                                       =  $res->valor_vencido;
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_valor_vencido                                  =  '';
+		                        
+		                    }
+		                    
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_valor_no_devenga_interes                            =  $res->valor_no_devenga_interes;
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_valor_no_devenga_interes                                  =  '';
+		                        
+		                    }
+		                    
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_valor_demanda_judicial                              =  $res->valor_demanda_judicial;
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_valor_demanda_judicial                                  =  '';
+		                        
+		                    }
+		                    
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_monto_cartera_castigada                             =  $res->monto_cartera_castigada;
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_monto_cartera_castigada                                  =  '';
+		                        
+		                    }
+		                    
+		                    if ( $res->dias_morosidad > 90)
+		                    {
+		                        $_provision                                           =  $res->provision;
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_provision                                  =  '';
+		                        
+		                    }
+		                    
+		                    
+		                    $_provision_acumulada                                 =  $res->provision_acumulada;
+		                    if ($res->fecha_de_cancelacion !="" )
+		                    {
+		                        $_fecha_de_cancelacion                                =  date("d/m/Y", strtotime($res->fecha_de_cancelacion));
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_fecha_de_cancelacion                                =  "";
+		                        
+		                    }
+		                    
+		                    if ($_estado_del_prestamo != 'CANCELADA')
+		                    {
+		                        $_forma_de_cancelacion                                =  '';
+		                        
+		                    }
+		                    else
+		                    {
+		                        $_forma_de_cancelacion                                =  'CONOTRAOPERACIÓNMISMAINSTITUCION';
+		                        
+		                    }
+		                    
+		                    
+		                    
+		                    $texto .= '<Registro NumeroRegistro="'. $i.'">';
+		                    $texto .= '<TipoIdentificacionParticipe>'.$_tipo_identificacion_participe.'</TipoIdentificacionParticipe>';
+		                    $texto .= '<IdentificacionParticipe>'.$_identificacion_participe.'</IdentificacionParticipe>';
+		                    $texto .= '<NumeroOpeCred>'.$_numero_operacion_de_credito.'</NumeroOpeCred>';
+		                    $texto .= '<EstadoOper>'.$_estado_operacion.'</EstadoOper>';
+		                    $texto .= '<EstadoPresta>'.$_estado_del_prestamo.'</EstadoPresta>';
+		                    $texto .= '<TasaInteres>'.$_tasa_interes.'</TasaInteres>';
+		                    $texto .= '<FechaVencCuota>'.$_fecha_vencimiento_cuota.'</FechaVencCuota>';
+		                    $texto .= '<ValorCreditoTotal>'.$_valor_del_credito_total.'</ValorCreditoTotal>';
+		                    $texto .= '<ValorCuotaMenCap>'.$_valor_cuota_mensual_del_capital.'</ValorCuotaMenCap>';
+		                    $texto .= '<ValorSegDesgravamenMen>'.$_valor_seguro_desgravamen_mensual.'</ValorSegDesgravamenMen>';
+		                    $texto .= '<ValorInteresmensual>'.$_valor_interes_mensual.'</ValorInteresmensual>';
+		                    $texto .= '<FechaPago>'.$_fecha_pago.'</FechaPago>';
+		                    $texto .= '<CuotaPagada>'.$_numero_cuota_pagada.'</CuotaPagada>';
+		                    $texto .= ' <CuotapendientesPago>'.$_numero_cuota_pendientes_de_pago.'</CuotapendientesPago>';
+		                    $texto .= '<ValorCuotaPagPM>'.$_valor_de_la_cuota_pagado_por_el_participe_mensual.'</ValorCuotaPagPM>';
+		                    $texto .= '<ValorcapPagPM>'.$_valor_de_capital_pagado_por_el_participe_mensual.'</ValorcapPagPM>';
+		                    $texto .= '<ValorAbonoPrestamo>'.$_valor_abono_prestamo.'</ValorAbonoPrestamo>';
+		                    $texto .= '<SaldoCapital>'.$_saldo_de_capital.'</SaldoCapital>';
+		                    $texto .= '<Saldointeres>'.$_saldo_del_interes.'</Saldointeres>';
+		                    $texto .= '<MontoTotPagado>'.$_monto_total_pagado.'</MontoTotPagado>';
+		                    $texto .= '<MontoTotAbonado>'.$_monto_total_abonado.'</MontoTotAbonado>';
+		                    $texto .= '<Interesescobrar>'.$_intereses_por_cobrar.'</Interesescobrar>';
+		                    $texto .= '<EstadoVencLiqui>'.$_estado_del_vencimiento_o_liquidacion.'</EstadoVencLiqui>';
+		                    $texto .= '<DiasMorosidad>'.$_dias_morosidad.'</DiasMorosidad> ';
+		                    $texto .= ' <Cuotasvencidas>'.$_cuotas_vencidas.'</Cuotasvencidas> ';
+		                    $texto .= ' <InteresMora>'.$_interes_sobre_mora.'</InteresMora>';
+		                    $texto .= ' <MontoVencCredito>'.$_monto_vencido_del_credito.'</MontoVencCredito>';
+		                    $texto .= ' <ValorVencido>'.$_valor_vencido.'</ValorVencido>';
+		                    $texto .= ' <ValorNoDevengaInteres>'.$_valor_no_devenga_interes.'</ValorNoDevengaInteres>';
+		                    $texto .= ' <ValorDemandaJudicial>'.$_valor_demanda_judicial.'</ValorDemandaJudicial>';
+		                    $texto .= '<MontoCarteraCastigada>'.$_monto_cartera_castigada.'</MontoCarteraCastigada>';
+		                    $texto .= ' <Provision>'.$_provision.'</Provision>';
+		                    $texto .= ' <ProvisionAcum>'.$_provision_acumulada.'</ProvisionAcum>';
+		                    $texto .= ' <Fechacancelacion>'.$_fecha_de_cancelacion.'</Fechacancelacion> ';
+		                    $texto .= ' <Formacancelacion>'.$_forma_de_cancelacion.'</Formacancelacion> ';
+		                    
+		                    $texto .= '</Registro>';
+		                    
+		                }
+		                
 		            }
 		            
 		        }
@@ -1993,6 +2206,7 @@ class EstructurasBiessController extends ControladorBase{
 		    
 		    die();
 		    */
+		    
 		    
 		    $fecha_hoy = getdate();
 		    $newDate_fechaHoy = date("dmY");

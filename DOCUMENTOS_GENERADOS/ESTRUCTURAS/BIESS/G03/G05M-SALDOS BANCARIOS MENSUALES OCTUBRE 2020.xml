@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<REGISTROS>
+	<DatosEstructura>
+		<CodigoEstructura>G05M</CodigoEstructura>
+		<CodigoEntidad>17</CodigoEntidad>
+		<FechaCorte>31/10/2020</FechaCorte>
+		<TotalRegistros>5</TotalRegistros>
+	</DatosEstructura>
+	<Detalle>
+		<Registro NumeroRegistro="1">
+			<TipoIdentificacionEmisor>RUC</TipoIdentificacionEmisor>
+			<IdentificacionEmisor>1790864316001</IdentificacionEmisor>
+			<TipoCuenta>CORRIENTE</TipoCuenta>
+			<NumeroCuenta>8000589904</NumeroCuenta>
+			<CuentaContable>110205</CuentaContable>
+			<DenominacionMoneda>USD</DenominacionMoneda>
+			<ValorMonedaDenominacion>951777.33</ValorMonedaDenominacion>
+			<ValorLibrosDolares>951777.33</ValorLibrosDolares>
+			<CalificacionRiesgoEmisor>AAAMENOS</CalificacionRiesgoEmisor>
+			<CalificadoraRiesgo>PCRPACIFIC</CalificadoraRiesgo>
+			<FechaUltimaCalificacion>31/12/2017</FechaUltimaCalificacion>
+			<TasaInteresCuenta>2.25</TasaInteresCuenta>
+		</Registro>
+		<Registro NumeroRegistro="2">
+			<TipoIdentificacionEmisor>RUC</TipoIdentificacionEmisor>
+			<IdentificacionEmisor>1790010937001</IdentificacionEmisor>
+			<TipoCuenta>CORRIENTE</TipoCuenta>
+			<NumeroCuenta>3343660504</NumeroCuenta>
+			<CuentaContable>110205</CuentaContable>
+			<DenominacionMoneda>USD</DenominacionMoneda>
+			<ValorMonedaDenominacion>1697476.2</ValorMonedaDenominacion>
+			<ValorLibrosDolares>1697476.2</ValorLibrosDolares>
+			<CalificacionRiesgoEmisor>AAAMENOS</CalificacionRiesgoEmisor>
+			<CalificadoraRiesgo>BANKWATCHRATINGS</CalificadoraRiesgo>
+			<FechaUltimaCalificacion>31/03/2018</FechaUltimaCalificacion>
+			<TasaInteresCuenta>0.75</TasaInteresCuenta>
+		</Registro>
+		<Registro NumeroRegistro="3">
+			<TipoIdentificacionEmisor>RUC</TipoIdentificacionEmisor>
+			<IdentificacionEmisor>1790098354001</IdentificacionEmisor>
+			<TipoCuenta>CORRIENTE</TipoCuenta>
+			<NumeroCuenta>0520607232</NumeroCuenta>
+			<CuentaContable>110205</CuentaContable>
+			<DenominacionMoneda>USD</DenominacionMoneda>
+			<ValorMonedaDenominacion>10764863.44</ValorMonedaDenominacion>
+			<ValorLibrosDolares>10764863.44</ValorLibrosDolares>
+			<CalificacionRiesgoEmisor>AAAMENOS</CalificacionRiesgoEmisor>
+			<CalificadoraRiesgo>BANKWATCHRATINGS</CalificadoraRiesgo>
+			<FechaUltimaCalificacion>31/12/2017</FechaUltimaCalificacion>
+			<TasaInteresCuenta>4.75</TasaInteresCuenta>
+		</Registro>
+		<Registro NumeroRegistro="4">
+			<TipoIdentificacionEmisor>RUC</TipoIdentificacionEmisor>
+			<IdentificacionEmisor>0190115798001</IdentificacionEmisor>
+			<TipoCuenta>AHORRO</TipoCuenta>
+			<NumeroCuenta>406108563105</NumeroCuenta>
+			<CuentaContable>110205</CuentaContable>
+			<DenominacionMoneda>USD</DenominacionMoneda>
+			<ValorMonedaDenominacion>1025338.06</ValorMonedaDenominacion>
+			<ValorLibrosDolares>1025338.06</ValorLibrosDolares>
+			<CalificacionRiesgoEmisor>AAMENOS</CalificacionRiesgoEmisor>
+			<CalificadoraRiesgo>CLASSINTERNATION</CalificadoraRiesgo>
+			<FechaUltimaCalificacion>20/12/2019</FechaUltimaCalificacion>
+			<TasaInteresCuenta>5.1</TasaInteresCuenta>
+		</Registro>
+	</Detalle>
+</REGISTROS>

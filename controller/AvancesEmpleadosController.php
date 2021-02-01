@@ -167,6 +167,13 @@ class AvancesEmpleadosController extends ControladorBase{
         $cuota=$monto_anticipo/$tiempo_diferido;
         $cuota=number_format((float)$cuota, 2, '.', '');
         $saldo=$monto_anticipo;
+        
+        echo $monto_anticipo;
+        echo $tiempo_diferido;
+        echo $cuota;
+        die();
+        
+        
         for ($i=0; $i<$tiempo_diferido; $i++)
         {
             if($i>0)

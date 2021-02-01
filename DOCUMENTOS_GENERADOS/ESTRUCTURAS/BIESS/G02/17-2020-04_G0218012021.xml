@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<REGISTROS>
+	<DatosEstructura>
+		<CodigoEstructura>G02</CodigoEstructura>
+		<CodigoEntidad>17</CodigoEntidad>
+		<FechaCorte>30/04/2020</FechaCorte>
+		<TotalRegistros>3</TotalRegistros>
+	</DatosEstructura>
+	<Detalle>
+		<Registro NumeroRegistro="1">
+			<Tipoidentificacionemisor>RUC</Tipoidentificacionemisor>
+			<Identificaciondelemisor>1790283380001</Identificaciondelemisor>
+			<NumerodelInstrumento>275194</NumerodelInstrumento>
+			<Tipodeinstrumento>CERTIFICADEPOSITO</Tipodeinstrumento>
+			<TipodeRenta>RENTAFIJA</TipodeRenta>
+			<Fechadeemision>13/04/2020</Fechadeemision>
+			<Fechadecompra>13/04/2020</Fechadecompra>
+			<Fechadevencimiento>08/01/2021</Fechadevencimiento>
+			<Tasanominal>6.90</Tasanominal>
+			<Plazopactado>270</Plazopactado>
+			<Valornominal>3000000.00</Valornominal>
+			<Numeroaccionescompradas>0</Numeroaccionescompradas>
+			<Preciocompraaccion>0.00</Preciocompraaccion>
+			<Valordecompra>3000000.00</Valordecompra>
+			<Periodopago>270</Periodopago>
+			<Amortizacioncapital>270</Amortizacioncapital>
+			<Amortizacioninteres>270</Amortizacioninteres>
+			<Basetasacapital>360</Basetasacapital>
+			<Basetasainteres>360</Basetasainteres>
+			<Periodogracia>NO</Periodogracia>
+			<EstadoRegistro>I</EstadoRegistro>
+		</Registro>
+		<Registro NumeroRegistro="2">
+			<Tipoidentificacionemisor>RUC</Tipoidentificacionemisor>
+			<Identificaciondelemisor>1790283380001</Identificaciondelemisor>
+			<NumerodelInstrumento>275479</NumerodelInstrumento>
+			<Tipodeinstrumento>CERTIFICADEPOSITO</Tipodeinstrumento>
+			<TipodeRenta>RENTAFIJA</TipodeRenta>
+			<Fechadeemision>22/04/2020</Fechadeemision>
+			<Fechadecompra>22/04/2020</Fechadecompra>
+			<Fechadevencimiento>18/01/2021</Fechadevencimiento>
+			<Tasanominal>6.90</Tasanominal>
+			<Plazopactado>271</Plazopactado>
+			<Valornominal>500000.00</Valornominal>
+			<Numeroaccionescompradas>0</Numeroaccionescompradas>
+			<Preciocompraaccion>0</Preciocompraaccion>
+			<Valordecompra>500000.00</Valordecompra>
+			<Periodopago>271</Periodopago>
+			<Amortizacioncapital>271</Amortizacioncapital>
+			<Amortizacioninteres>271</Amortizacioninteres>
+			<Basetasacapital>360</Basetasacapital>
+			<Basetasainteres>360</Basetasainteres>
+			<Periodogracia>NO</Periodogracia>
+			<EstadoRegistro>I</EstadoRegistro>
+		</Registro>
+	
+	</Detalle>
+</REGISTROS>

@@ -3267,7 +3267,7 @@ public function genXmlRetencionCesantes($_id_participes){
     /** AUX de VARIABLES **/
     
     
-    $_fechaDocumento =    "31".'/'."03".'/'."2020";
+    $_fechaDocumento =    "31".'/'."01".'/'."2021";
     
     /** VARIABLES DE XML **/
     $_ambiente = 2; //1 pruebas  2 produccion
@@ -3289,7 +3289,7 @@ public function genXmlRetencionCesantes($_id_participes){
     $_tipoIdentificacionRetenido   = $rsConsulta1[0]->tipo_identificacion; // deacuerdo a la tabla 7 --> ruc 04
     $_razonSocialRetenido  = $rsConsulta1[0]->nombres_participes;
     $_identificacionSujetoRetenido = $rsConsulta1[0]->cedula_participes;
-    $_periodoFiscal        = "03".'/'."2020";
+    $_periodoFiscal        = "31".'/'."2021";
     
     $_claveAcceso = $this->genClaveAcceso($_fechaEmision, $_rucEmisor, $_ambiente, $_establecimiento, $_puntoEmision, $_secuencial, $_tipoEmision);
     
@@ -3507,6 +3507,7 @@ public function genXmlRetencionCesantes($_id_participes){
 
 
 
+//AQUI CAMBIAR LAS FECHAS 
 
 public function genXmlRetencionCesantiasPatronales($_id_liquidacion_cabeza){
     

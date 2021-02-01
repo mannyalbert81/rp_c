@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<REGISTROS>
+	<DatosEstructura>
+		<CodigoEstructura>G02</CodigoEstructura>
+		<CodigoEntidad>17</CodigoEntidad>
+		<FechaCorte>30/06/2020</FechaCorte>
+		<TotalRegistros>2</TotalRegistros>
+	</DatosEstructura>
+	<Detalle>
+		<Registro NumeroRegistro="1">
+			<Tipoidentificacionemisor>RUC</Tipoidentificacionemisor>
+			<Identificaciondelemisor>1790864316001</Identificaciondelemisor>
+			<NumerodelInstrumento>839731670</NumerodelInstrumento>
+			<Tipodeinstrumento>CERTIFICADEPOSITO</Tipodeinstrumento>
+			<TipodeRenta>RENTAFIJA</TipodeRenta>
+			<Fechadeemision>03/06/2020</Fechadeemision>
+			<Fechadecompra>03/06/2020</Fechadecompra>
+			<Fechadevencimiento>02/12/2020</Fechadevencimiento>
+			<Tasanominal>4.75</Tasanominal>
+			<Plazopactado>182</Plazopactado>
+			<Valornominal>37268.25</Valornominal>
+			<Numeroaccionescompradas>0</Numeroaccionescompradas>
+			<Preciocompraaccion>0</Preciocompraaccion>
+			<Valordecompra>37268.25</Valordecompra>
+			<Periodopago>182</Periodopago>
+			<Amortizacioncapital>182</Amortizacioncapital>
+			<Amortizacioninteres>182</Amortizacioninteres>
+			<Basetasacapital>360</Basetasacapital>
+			<Basetasainteres>360</Basetasainteres>
+			<Periodogracia>NO</Periodogracia>
+			<EstadoRegistro>I</EstadoRegistro>
+		</Registro>
+	</Detalle>
+</REGISTROS>

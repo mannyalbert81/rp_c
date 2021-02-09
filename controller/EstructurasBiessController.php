@@ -1172,7 +1172,7 @@ class EstructurasBiessController extends ControladorBase{
 		    //$id_usuarios=$_SESSION['id_usuarios'];
 		    $mes_reporte=  12;//     $_POST['mes_reporte'];
 		    
-		    $anio_reporte= 2020; //     $_POST['anio_reporte'];
+		    $anio_reporte= 2019; //     $_POST['anio_reporte'];
 		    
 		    
 		    
@@ -1238,7 +1238,7 @@ class EstructurasBiessController extends ControladorBase{
                 		    tipo_tabla_amortizacion,
                 		    forma_cobro_credito,
                 		    estado_registro";
-		    $tablas = "fc_biess_g45('$fecha' ::date , '$newDate_fechacorte' :: date )";
+		    $tablas = "fc_biess_g45('01/01/1900' ::date , '$newDate_fechacorte' :: date )";
 		    
 		    $html= "";
 		    
@@ -2034,7 +2034,7 @@ class EstructurasBiessController extends ControladorBase{
 		                    
 		                    if ( $res->dias_morosidad > 90)
 		                    {
-		                        $_cuotas_vencidas                                     =  $res->cuotas_vencidas;
+		                        $_cuotas_vencidas                                     =  intval($res->cuotas_vencidas);
 		                        
 		                    }
 		                    else
@@ -2161,8 +2161,8 @@ class EstructurasBiessController extends ControladorBase{
 		                    $texto .= '<ValorSegDesgravamenMen>'.$_valor_seguro_desgravamen_mensual.'</ValorSegDesgravamenMen>';
 		                    $texto .= '<ValorInteresmensual>'.$_valor_interes_mensual.'</ValorInteresmensual>';
 		                    $texto .= '<FechaPago>'.$_fecha_pago.'</FechaPago>';
-		                    $texto .= '<CuotaPagada>'.$_numero_cuota_pagada.'</CuotaPagada>';
-		                    $texto .= ' <CuotapendientesPago>'.$_numero_cuota_pendientes_de_pago.'</CuotapendientesPago>';
+		                    $texto .= '<CuotaPagada>'.intval($_numero_cuota_pagada).'</CuotaPagada>';
+		                    $texto .= ' <CuotapendientesPago>'.intval($_numero_cuota_pendientes_de_pago).'</CuotapendientesPago>';
 		                    $texto .= '<ValorCuotaPagPM>'.$_valor_de_la_cuota_pagado_por_el_participe_mensual.'</ValorCuotaPagPM>';
 		                    $texto .= '<ValorcapPagPM>'.$_valor_de_capital_pagado_por_el_participe_mensual.'</ValorcapPagPM>';
 		                    $texto .= '<ValorAbonoPrestamo>'.$_valor_abono_prestamo.'</ValorAbonoPrestamo>';

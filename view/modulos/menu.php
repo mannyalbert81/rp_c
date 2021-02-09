@@ -1,4 +1,4 @@
-
+f
 <?php 
 $controladores=$_SESSION['controladores'];
  function getcontrolador($controlador,$controladores){
@@ -596,6 +596,58 @@ $controladores=$_SESSION['controladores'];
         </li>
        </ul>
       </li>
+      
+      
+      <li class="treeview"  style="<?php echo getcontrolador("MenuRiesgos",$controladores) ?>"  >
+          <a href="#">
+            <i class="glyphicon glyphicon-th-list"></i> <span>Riesgos</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+             <li class="treeview"  style="<?php echo getcontrolador("AdministracionRiesgos",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Administración</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+          	  </ul>
+            </li>
+            
+            
+            <li class="treeview"  style="<?php echo getcontrolador("ProcesosRiesgos",$controladores) ?>"  >
+              <a href="#">
+                <i class="fa fa-folder-open-o"></i> <span>Procesos</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+              	 <li style="<?php echo getcontrolador("Riesgos",$controladores) ?>"><a href="index.php?controller=Riesgos&action=index"><i class="fa fa-circle-o"></i> Calificar Cartera</a></li>
+             </ul>
+            </li>
+        
+        <li class="treeview"  style="<?php echo getcontrolador("ReportesRiesgos",$controladores) ?>"  >
+          <a href="#">
+            <i class="fa fa-folder-open-o"></i> <span>Reportes</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+           <li style="<?php echo getcontrolador("Riesgos",$controladores) ?>"><a href="index.php?controller=Riesgos&action=indexCalificacion"><i class="fa fa-circle-o"></i> Calificaciones</a></li>
+		  </ul>
+        </li>
+       </ul>
+      </li>
+      
+      
+      
+      
+      
          <li class="treeview"  style="<?php echo getcontrolador("MenuInformacion",$controladores) ?>"  >
           <a href="#">
             <i class="glyphicon glyphicon-info-sign"></i> <span>Informacion BIESS / SB</span>

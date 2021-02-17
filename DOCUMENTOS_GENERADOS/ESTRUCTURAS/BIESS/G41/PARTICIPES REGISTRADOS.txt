@@ -1,0 +1,50 @@
+1704259470    BYRON ALEJANDRO BOADA ALDAZ
+1715564066    FRANKLIN ORDOÐEZ GONZALES
+
+1711752954	MICHAEL EDUARDO TAPIA VILLACRES
+1715570865	PAMELA CAROLINA ACOSTA TOALA
+1707670061	GIOVANNA DEL ROCIO HIDALGO RUEDA
+0502780059	DARWIN PAUL GUAYAQUIL MADRIL
+
+
+1710230531    KATIA IVONNE MERIZALDE JARAMIL
+1712992450	GUIDO PATRICIO ARAUZ RECALDE
+
+
+
+0502782923	VERONICA ELIZABETH OTANEZ SEGOVIA
+1705617882	BOLIVAR FERNANDO ZALDUMBIDE SOLIS
+
+
+LOS DESAFILIADOS
+0501580294 
+1707020788
+
+Participe con crédito activo no puede ser registrado porque esta en otros fondos
+1704259470.  BYRON ALEJANDRO BOADA ALDAZ
+1710230531.  KATIA IVONNE MERIZALDE JARAMIL	
+
+
+PARTICIPES CON VALOR NEGATIVO 
+1705249652 
+
+Eliminar de cuenta individual 
+1710230531
+
+
+update core_g41_biess  set anio = '1900' where identificacion_participe_g41_biess = '1704259470' or
+identificacion_participe_g41_biess = '1710230531' 
+
+
+
+update  core_g41_biess set fecha_ingreso_participe_g41_biess = '2019-12-31'  
+where anio = '2019'  and mes = 12 
+and fecha_ingreso_participe_g41_biess > '2019-12-31'
+
+update core_g41_biess  set anio = '1900' where identificacion_participe_g41_biess = '1704259470' or
+identificacion_participe_g41_biess = '1710230531' 
+
+
+
+
+

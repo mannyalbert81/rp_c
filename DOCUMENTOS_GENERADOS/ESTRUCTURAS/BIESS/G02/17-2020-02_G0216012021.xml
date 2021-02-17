@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<REGISTROS>
+	<DatosEstructura>
+		<CodigoEstructura>G02</CodigoEstructura>
+		<CodigoEntidad>17</CodigoEntidad>
+		<FechaCorte>29/02/2020</FechaCorte>
+		<TotalRegistros>6</TotalRegistros>
+	</DatosEstructura>
+	<Detalle>
+		<Registro NumeroRegistro="1">
+			<Tipoidentificacionemisor>RUC</Tipoidentificacionemisor>
+			<Identificaciondelemisor>1790864316001</Identificaciondelemisor>
+			<NumerodelInstrumento>8378248310</NumerodelInstrumento>
+			<Tipodeinstrumento>CERTIFICADEPOSITO</Tipodeinstrumento>
+			<TipodeRenta>RENTAFIJA</TipodeRenta>
+			<Fechadeemision>05/02/2020</Fechadeemision>
+			<Fechadecompra>05/02/2020</Fechadecompra>
+			<Fechadevencimiento>06/05/2020</Fechadevencimiento>
+			<Tasanominal>3.25</Tasanominal>
+			<Plazopactado>91</Plazopactado>
+			<Valornominal>47351.42</Valornominal>
+			<Numeroaccionescompradas>0</Numeroaccionescompradas>
+			<Preciocompraaccion>0</Preciocompraaccion>
+			<Valordecompra>47351.42</Valordecompra>
+			<Periodopago>91</Periodopago>
+			<Amortizacioncapital>91</Amortizacioncapital>
+			<Amortizacioninteres>91</Amortizacioninteres>
+			<Basetasacapital>360</Basetasacapital>
+			<Basetasainteres>360</Basetasainteres>
+			<Periodogracia>NO</Periodogracia>
+			<EstadoRegistro>I</EstadoRegistro>
+		</Registro>
+		<Registro NumeroRegistro="2">
+			<Tipoidentificacionemisor>RUC</Tipoidentificacionemisor>
+			<Identificaciondelemisor>0990553963001</Identificaciondelemisor>
+			<NumerodelInstrumento>1818-BSD09</NumerodelInstrumento>
+			<Tipodeinstrumento>PAPEL COMERCIAL</Tipodeinstrumento>
+			<TipodeRenta>RENTAFIJA</TipodeRenta>
+			<Fechadeemision>21/02/2020</Fechadeemision>
+			<Fechadecompra>21/02/2020</Fechadecompra>
+			<Fechadevencimiento>12/02/2021</Fechadevencimiento>
+			<Tasanominal>8.30</Tasanominal>
+			<Plazopactado>357</Plazopactado>
+			<Valornominal>189289.87</Valornominal>
+			<Numeroaccionescompradas>0</Numeroaccionescompradas>
+			<Preciocompraaccion>0</Preciocompraaccion>
+			<Valordecompra>204870</Valordecompra>
+			<Periodopago>357</Periodopago>
+			<Amortizacioncapital>357</Amortizacioncapital>
+			<Amortizacioninteres>357</Amortizacioninteres>
+			<Basetasacapital>360</Basetasacapital>
+			<Basetasainteres>360</Basetasainteres>
+			<Periodogracia>NO</Periodogracia>
+			<EstadoRegistro>I</EstadoRegistro>
+		</Registro>
+		<Registro NumeroRegistro="3">
+			<Tipoidentificacionemisor>RUC</Tipoidentificacionemisor>
+			<Identificaciondelemisor>0990553963001</Identificaciondelemisor>
+			<NumerodelInstrumento>1902-BSD02</NumerodelInstrumento>
+			<Tipodeinstrumento>PAPEL COMERCIAL</Tipodeinstrumento>
+			<TipodeRenta>RENTAFIJA</TipodeRenta>
+			<Fechadeemision>27/02/2020</Fechadeemision>
+			<Fechadecompra>27/02/2020</Fechadecompra>
+			<Fechadevencimiento>18/02/2021</Fechadevencimiento>
+			<Tasanominal>8.30</Tasanominal>
+			<Plazopactado>357</Plazopactado>
+			<Valornominal>299480.28</Valornominal>
+			<Numeroaccionescompradas>0</Numeroaccionescompradas>
+			<Preciocompraaccion>0</Preciocompraaccion>
+			<Valordecompra>324130</Valordecompra>
+			<Periodopago>357</Periodopago>
+			<Amortizacioncapital>357</Amortizacioncapital>
+			<Amortizacioninteres>357</Amortizacioninteres>
+			<Basetasacapital>360</Basetasacapital>
+			<Basetasainteres>360</Basetasainteres>
+			<Periodogracia>NO</Periodogracia>
+			<EstadoRegistro>I</EstadoRegistro>
+		</Registro>
+		<Registro NumeroRegistro="4">
+			<Tipoidentificacionemisor>RUC</Tipoidentificacionemisor>
+			<Identificaciondelemisor>0990041105001</Identificaciondelemisor>
+			<NumerodelInstrumento>272436</NumerodelInstrumento>
+			<Tipodeinstrumento>PAPEL COMERCIAL</Tipodeinstrumento>
+			<TipodeRenta>RENTAFIJA</TipodeRenta>
+			<Fechadeemision>11/02/2020</Fechadeemision>
+			<Fechadecompra>11/02/2020</Fechadecompra>
+			<Fechadevencimiento>24/11/2020</Fechadevencimiento>
+			<Tasanominal>8.25</Tasanominal>
+			<Plazopactado>287</Plazopactado>
+			<Valornominal>187657.6</Valornominal>
+			<Numeroaccionescompradas>0</Numeroaccionescompradas>
+			<Preciocompraaccion>0</Preciocompraaccion>
+			<Valordecompra>200000</Valordecompra>
+			<Periodopago>287</Periodopago>
+			<Amortizacioncapital>287</Amortizacioncapital>
+			<Amortizacioninteres>287</Amortizacioninteres>
+			<Basetasacapital>360</Basetasacapital>
+			<Basetasainteres>360</Basetasainteres>
+			<Periodogracia>NO</Periodogracia>
+			<EstadoRegistro>I</EstadoRegistro>
+		</Registro>
+		<Registro NumeroRegistro="5">
+			<Tipoidentificacionemisor>RUC</Tipoidentificacionemisor>
+			<Identificaciondelemisor>0990001626001</Identificaciondelemisor>
+			<NumerodelInstrumento>272431</NumerodelInstrumento>
+			<Tipodeinstrumento>PAPEL COMERCIAL</Tipodeinstrumento>
+			<TipodeRenta>RENTAFIJA</TipodeRenta>
+			<Fechadeemision>11/02/2020</Fechadeemision>
+			<Fechadecompra>11/02/2020</Fechadecompra>
+			<Fechadevencimiento>11/11/2020</Fechadevencimiento>
+			<Tasanominal>8.25</Tasanominal>
+			<Plazopactado>274</Plazopactado>
+			<Valornominal>329321.36</Valornominal>
+			<Numeroaccionescompradas>0</Numeroaccionescompradas>
+			<Preciocompraaccion>0</Preciocompraaccion>
+			<Valordecompra>350000</Valordecompra>
+			<Periodopago>274</Periodopago>
+			<Amortizacioncapital>274</Amortizacioncapital>
+			<Amortizacioninteres>274</Amortizacioninteres>
+			<Basetasacapital>360</Basetasacapital>
+			<Basetasainteres>360</Basetasainteres>
+			<Periodogracia>NO</Periodogracia>
+			<EstadoRegistro>I</EstadoRegistro>
+		</Registro>
+	</Detalle>
+</REGISTROS>

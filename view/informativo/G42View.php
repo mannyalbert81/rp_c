@@ -55,7 +55,7 @@
           </h1>
           <ol class="breadcrumb">
             <li><a href="<?php echo $helper->url("Usuarios","Bienvenida"); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Estructura G41</li>
+            <li class="active">Estructura G42</li>
           </ol>
         </section>
         
@@ -137,7 +137,7 @@
    <div class="control-sidebar-bg"></div>
  </div>
    <?php include("view/modulos/links_js.php"); ?>
-   <script src="view/informativo/js/G42.js?0.10" ></script>
+   <script src="view/informativo/js/G42.js?0.11" ></script>
   </body>
 
 </html>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<REGISTROS>
+	<DatosEstructura>
+		<CodigoEstructura>G5M</CodigoEstructura>
+		<CodigoEntidad>17</CodigoEntidad>
+		<FechaCorte>29/02/2020</FechaCorte>
+		<TotalRegistros>4</TotalRegistros>
+	</DatosEstructura>
+	<Detalle>
+		<Registro NumeroRegistro="1">
+			<TipoIdentificacionEmisor>RUC</TipoIdentificacionEmisor>
+			<IdentificacionEmisor>1790864316001</IdentificacionEmisor>
+			<TipoCuenta>CORRIENTE</TipoCuenta>
+			<NumeroCuenta>8000589904</NumeroCuenta>
+			<CuentaContable>110205</CuentaContable>
+			<DenominacionMoneda>USD</DenominacionMoneda>
+			<ValorMonedaDenominacion>1671535.25</ValorMonedaDenominacion>
+			<ValorLibrosDolares>1671535.25</ValorLibrosDolares>
+			<CalificacionRiesgoEmisor>AAAMENOS</CalificacionRiesgoEmisor>
+			<CalificadoraRiesgo>PCRPACIFIC</CalificadoraRiesgo>
+			<FechaUltimaCalificacion>31/12/2017</FechaUltimaCalificacion>
+			<TasaInteresCuenta>2.25</TasaInteresCuenta>
+		</Registro>
+		<Registro NumeroRegistro="2">
+			<TipoIdentificacionEmisor>RUC</TipoIdentificacionEmisor>
+			<IdentificacionEmisor>1790010937001</IdentificacionEmisor>
+			<TipoCuenta>CORRIENTE</TipoCuenta>
+			<NumeroCuenta>33436605</NumeroCuenta>
+			<CuentaContable>110205</CuentaContable>
+			<DenominacionMoneda>USD</DenominacionMoneda>
+			<ValorMonedaDenominacion>1062129.57</ValorMonedaDenominacion>
+			<ValorLibrosDolares>1062129.57</ValorLibrosDolares>
+			<CalificacionRiesgoEmisor>AAAMENOS</CalificacionRiesgoEmisor>
+			<CalificadoraRiesgo>BANKWATCHRATINGS</CalificadoraRiesgo>
+			<FechaUltimaCalificacion>31/03/2018</FechaUltimaCalificacion>
+			<TasaInteresCuenta>1.25</TasaInteresCuenta>
+		</Registro>
+		<Registro NumeroRegistro="3">
+			<TipoIdentificacionEmisor>RUC</TipoIdentificacionEmisor>
+			<IdentificacionEmisor>1790098354001</IdentificacionEmisor>
+			<TipoCuenta>CORRIENTE</TipoCuenta>
+			<NumeroCuenta>0520607232</NumeroCuenta>
+			<CuentaContable>110205</CuentaContable>
+			<DenominacionMoneda>USD</DenominacionMoneda>
+			<ValorMonedaDenominacion>12762326.52</ValorMonedaDenominacion>
+			<ValorLibrosDolares>12762326.52</ValorLibrosDolares>
+			<CalificacionRiesgoEmisor>AAAMENOS</CalificacionRiesgoEmisor>
+			<CalificadoraRiesgo>BANKWATCHRATINGS</CalificadoraRiesgo>
+			<FechaUltimaCalificacion>31/12/2017</FechaUltimaCalificacion>
+			<TasaInteresCuenta>4.25</TasaInteresCuenta>
+		</Registro>
+	</Detalle>
+</REGISTROS>

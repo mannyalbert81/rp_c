@@ -950,21 +950,23 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	      
 	      $rsdatos = $participes->getCondicionesFunciones($columnas, $tablas);
 	      
+	      
+	      
 	      $datos_reporte['NOMBRE_PARTICIPES']=$rsdatos[0]->fname;
 	      $datos_reporte['IDENTIFICACION_PARTICIPES']=$rsdatos[0]->fidentificacion;
-	      $datos_reporte['CANTIDAD']=$rsdatos[0]->fvalue;
+	      $datos_reporte['CANTIDAD']=number_format($rsdatos[0]->fvalue, 2, ",", ".");
 	      $datos_reporte['CONCEPTO']=$rsdatos[0]->fobservation;
 	      $datos_reporte['CREDITO']=$rsdatos[0]->fcredit_name;
 	      $datos_reporte['NUMERO_TRANSACCION']=$rsdatos[0]->fcredittransactionid;
 	      $datos_reporte['NUMERO_ASIENTO']=$rsdatos[0]->fjournalid;
-	      $datos_reporte['FORMA_DE_PAGO']=$rsdatos[0]->credit_payment_mode;
+	      $datos_reporte['FORMA_DE_PAGO']=$rsdatos[0]->descripcion_creditos_tipo_pagos_transacciones;
 	      $datos_reporte['FECHA_PAGO']=$rsdatos[0]->fecha_creditos_pagos;
-	      $datos_reporte['VALOR']=$rsdatos[0]->valor_creditos_pagos;
+	      $datos_reporte['VALOR']=number_format($rsdatos[0]->valor_creditos_pagos, 2, ",", ".");
 	      $datos_reporte['BANCO']=$rsdatos[0]->nombre_bancos_creditos_pagos;
 	      $datos_reporte['DOCUMENTO']=$rsdatos[0]->numero_referencia_creditos_pagos;
-	      $datos_reporte['MOTIVO_DE_PAGO']=$rsdatos[0]->descripcion_creditos_tipo_pagos_transacciones;
+	      $datos_reporte['MOTIVO_DE_PAGO']=$rsdatos[0]->credit_payment_mode;
 	    
-	    $query = "select atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, sum(ctd.valor_transaccion_detalle) as value, ct.fecha_transacciones
+	    $query = "select atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, sum(COALESCE(ctd.valor_transaccion_detalle,0)) as value, ct.fecha_transacciones
 	    from core_transacciones ct
 	    inner join core_transacciones_detalle ctd on ct.id_transacciones = ctd.id_transacciones
 	    inner join core_tabla_amortizacion_pagos aatv on ctd.id_tabla_amortizacion_pago = aatv.id_tabla_amortizacion_pagos
@@ -973,6 +975,9 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	    and ct.id_transacciones = $id_transacciones
 	    group by atav.tipo_tabla_amortizacion_parametrizacion, atav.descripcion_tabla_amortizacion_parametrizacion, ct.fecha_transacciones";
 	    
+	    $total = 0; 
+	    
+	    
 	    $rsdatos1 = $participes->enviaquery($query);
 	    $html1="";
 	    
@@ -980,12 +985,33 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	        
 	        
 	        
-	        foreach ($rsdatos1 as $res) {
+	        $html1.='<table class="1" cellspacing="0" style="width:100px;" border="1" >';
+	        $html1.= "<tr>";
+	        $html1.='<th class="izquierda" style="text-align: left;  font-size: 12px;">DESGLOCE DE PAGO</th>';
+	        $html1.='<th class="derecha" style="text-align: right;  font-size: 12px;">VALOR</th>';
+	        $html1.='</tr>';
+	         
+	        
+	        foreach ($rsdatos1 as $res){
 	           
+	            $total = $total + $res->value;
 	            
+	            $html1.='<tr>';
+	            $html1.='<td class="izquierda" style="font-size: 11px;">'.$res->descripcion_tabla_amortizacion_parametrizacion.'</td>';
+	            $html1.='<td class="derecha" style="font-size: 11px; text-align: rigth;">'.number_format($res->value, 2, ",", ".").'</td>';
+	            $html1.='</tr>';
 	            
 	        }
 	        
+	        $html1.='<tr>';
+	        $html1.='<td class="derecha" style="font-size: 11px;"><b>Valor Pago</b></td>';
+	        $html1.='<td class="derecha" style="font-size: 11px; text-align: rigth;"><b>'.number_format($total, 2, ",", ".").'</b></td>';
+	        $html1.='</tr>';
+	        
+	        
+	        $html1.='</table>';
+	       
+	
 	    }
 	    
 	    

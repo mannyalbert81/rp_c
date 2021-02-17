@@ -1509,20 +1509,21 @@ class CoreInformacionParticipesController extends ControladorBase{
             foreach ( $resultSet as $res){
                 
                 $dataFila['anio'] = $res->anio;
-                $dataFila['enero'] = $res->enero;
-                $dataFila['febrero']  = $res->febrero;
-                $dataFila['marzo'] = $res->marzo;
-                $dataFila['abril']  = $res->abril;
-                $dataFila['mayo'] = $res->mayo;
-                $dataFila['junio']  = $res->junio;
-                $dataFila['julio'] = $res->julio;
-                $dataFila['agosto']  = $res->agosto;
-                $dataFila['septiembre'] = $res->septiembre;
-                $dataFila['octubre']  = $res->octubre;
-                $dataFila['noviembre'] = $res->noviembre;
-                $dataFila['diciembre']  = $res->diciembre;
-                $dataFila['acumulado']  = $res->acumulado;
-                $dataFila['total']  = $res->total;
+                $dataFila['enero'] = number_format($res->enero, 2, ",", ".");
+                $dataFila['febrero']  = number_format($res->febrero, 2, ",", ".");
+                $dataFila['marzo'] = number_format($res->marzo, 2, ",", ".");
+                $dataFila['abril']  = number_format($res->abril, 2, ",", ".");
+                $dataFila['mayo'] = number_format($res->mayo, 2, ",", ".");
+                $dataFila['junio']  = number_format($res->junio, 2, ",", ".");
+                $dataFila['julio'] = number_format($res->julio, 2, ",", ".");
+                $dataFila['agosto']  = number_format($res->agosto, 2, ",", ".");
+                $dataFila['septiembre'] = number_format($res->septiembre, 2, ",", ".");
+                $dataFila['octubre']  = number_format($res->octubre, 2, ",", ".");
+                $dataFila['noviembre'] = number_format($res->noviembre, 2, ",", ".");
+                $dataFila['diciembre']  = number_format($res->diciembre, 2, ",", ".");
+                $dataFila['acumulado']  = number_format($res->acumulado, 2, ",", ".");
+                $dataFila['total']  = number_format($res->total, 2, ",", ".");
+                
                 
                 $data[] = $dataFila;
             }

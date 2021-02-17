@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<REGISTROS>
+	<DatosEstructura>
+		<CodigoEstructura>G02</CodigoEstructura>
+		<CodigoEntidad>17</CodigoEntidad>
+		<FechaCorte>31/10/2020</FechaCorte>
+		<TotalRegistros>2</TotalRegistros>
+	</DatosEstructura>
+	<Detalle>
+		<Registro NumeroRegistro="1">
+			<Tipoidentificacionemisor>RUC</Tipoidentificacionemisor>
+			<Identificaciondelemisor>1792365031001</Identificaciondelemisor>
+			<NumerodelInstrumento>3069 BSD05</NumerodelInstrumento>
+			<Tipodeinstrumento>FACTURASCOMERCIALES</Tipodeinstrumento>
+			<TipodeRenta>RENTAFIJA</TipodeRenta>
+			<Fechadeemision>01/10/2020</Fechadeemision>
+			<Fechadecompra>01/10/2020</Fechadecompra>
+			<Fechadevencimiento>29/01/2021</Fechadevencimiento>
+			<Tasanominal>9.25</Tasanominal>
+			<Plazopactado>120</Plazopactado>
+			<Valornominal>949735.3</Valornominal>
+			<Numeroaccionescompradas>0</Numeroaccionescompradas>
+			<Preciocompraaccion>0</Preciocompraaccion>
+			<Valordecompra>949735.3</Valordecompra>
+			<Periodopago>120</Periodopago>
+			<Amortizacioncapital>120</Amortizacioncapital>
+			<Amortizacioninteres>120</Amortizacioninteres>
+			<Basetasacapital>360</Basetasacapital>
+			<Basetasainteres>360</Basetasainteres>
+			<Periodogracia>NO</Periodogracia>
+			<EstadoRegistro>I</EstadoRegistro>
+		</Registro>
+	</Detalle>
+</REGISTROS>

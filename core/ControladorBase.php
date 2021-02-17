@@ -234,5 +234,16 @@ class ControladorBase{
     
     	require_once 'view/informativo/'.$vista.'View.php';
     }
+    
+    public function view_Riesgos($vista,$datos){
+        foreach ($datos as $id_assoc => $valor) {
+            ${$id_assoc}=$valor;
+        }
+        
+        require_once 'core/AyudaVistas.php';
+        $helper=new AyudaVistas();
+        
+        require_once 'view/riesgos/'.$vista.'View.php';
+    }
 }
 ?>

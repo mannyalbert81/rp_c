@@ -234,7 +234,6 @@ class RiesgosController extends ControladorBase{
 	
 	
 	
-<<<<<<< HEAD
 	function graficaRespuesta( $paramArrayDatos, $mes, $year){
 	    
 	  
@@ -333,141 +332,13 @@ class RiesgosController extends ControladorBase{
 	        $html.='<td style="font-size: 12px; text-align: right;">' .'$  29 906' .''.'</td>';
 	        $html.='<td style="font-size: 12px; text-align: right;">'.'$ '.'</td>';
 	        $html.='<td style="font-size: 12px; text-align: right;">'.'$  10 950'.''.'</td>';
-	        $html.='<td style="font-size: 12px; text-align: center;">'.'$  353 '.''.'</td>';
+	        $html.='<td style="font-size: 12px; text-align: center;">'.'$  '.''.'</td>';
 	        $html.='<td style="font-size: 12px; text-align: right;">' .'$  '.''.'</td>';
 	        $html.='<td style="font-size: 12px; text-align: right;">'.'$  '.''.'</td>';
 	        $html.='<td style="font-size: 12px; text-align: right;">'.'$  '.'$ 28 497'.''.'</td>';
 	        $html.='<td style="font-size: 12px; text-align: right;">'.'$  '.''.'</td>';
 	        $html.='<td style="font-size: 12px; text-align: right;">'.'$  '.'$ 28 497'.''.'</td>';
 	        $html.='</tr>';
-=======
-	function graficaRespuesta( $paramArrayDatos, $mes){
-	    
-	    $_base_imponible = 0;
-	    $_valor_retenido = 0;
-	    
-	    $_base_imponible_renta = 0;
-	    $_valor_retenido_renta = 0;
-	    
-	    $_base_imponible_iva = 0;
-	    $_valor_retenido_iva = 0;
-	    
-	    
-	    $_saldo_mes_1 = 0;
-	    $_saldo_mes_3 = 0;
-	    $_saldo_mes_3 = 0;
-	    $_saldo_mes_4 = 0;
-	    $_saldo_mes_5 = 0;
-	    $_saldo_mes_6 = 0;
-	    $_saldo_mes_7 = 0;
-	    $_saldo_mes_8 = 0;
-	   
-	    
-	    
-	    $cantidad = sizeof($paramArrayDatos);
-	    $html = "";
-	    if( $cantidad > 0 ){
-	        
-	        $html.= "<table id='tbl_detalle_diario' class='tablesorter table table-striped table-bordered dt-responsive nowrap'>";
-	        $html.= "<thead>";
-	        $html.= "<tr>";
-	        $html.='<th style="text-align: center;  font-size: 12px;">CALIFICACION</th>';
-	        $html.='<th style="text-align: center;  font-size: 12px;">PQ-Crédito 2 x1</th>';
-	        $html.='<th style="text-align: center;  font-size: 12px;">PQ-Crédito Emergente</th>';
-	        $html.='<th style="text-align: center;  font-size: 12px;">PH-Crédito Hipotecario</th>';
-	        $html.='<th style="text-align: center;  font-size: 12px;">PQ-Crédito Ordinario</th>';
-	        $html.='<th style="text-align: center;  font-size: 12px;">PQ-Acuerdo de Pago</th>';
-	        $html.='<th style="text-align: center;  font-size: 12px;">PQ-Refinanciamiento</th>';
-	        $html.='<th style="text-align: center;  font-size: 12px;">PQ-Acta Transaccional</th>';
-	        $html.='<th style="text-align: center;  font-size: 12px;">PH-Acta Transaccional Hipotecario.</th>';
-	        $html.='<th style="text-align: center;  font-size: 12px;">TOTAL</th>';
-	        
-	        $html.='</tr>';
-	        $html.='</thead>';
-	        $html.='<tbody>';
-	        
-	        $i=0;
-	        
-	        
-	        foreach ($paramArrayDatos as $res){
-	            
-	            $i++;
-	            $html.='<tr>';
-	            $html.='<td style="font-size: 11px;">'.$i.'</td>';
-	            if ($res->id_tipo_creditos == 1 )
-	            {
-	                switch ($mes) {
-	                    case 1:
-	                        if($res->calificación_riesgos_rpt_creditos == "A1")
-	                        {
-	                            $_saldo_mes_1_A1 =  $_saldo_mes_1_A1  + $res->sal_ene_rpt_creditos ;
-	                            
-	                        }
-	                        
-	                        
-	                        break;
-	                    case 2:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  +$res->sal_feb_rpt_creditos ;
-	                        break;
-	                    case 3:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  +$res->sal_mar_rpt_creditos ;
-	                        break;
-	                    case 4:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  + $res->sal_abr_rpt_creditos ;
-	                        break;
-	                    case 5:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  + $res->sal_may_rpt_creditos ;
-	                        break;
-	                    case 6:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  + $res->sal_jun_rpt_creditos ;
-	                        break;
-	                    case 7:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  + $res->sal_jul_rpt_creditos ;
-	                        break;
-	                    case 8:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  + $res->sal_ago_rpt_creditos ;
-	                        break;
-	                    case 9:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  + $res->sal_sep_rpt_creditos ;
-	                        break;
-	                    case 10:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  + $res->sal_otc_rpt_creditos ;
-	                        break;
-	                    case 11:
-	                        $_saldo_mes_1 = $_saldo_mes_1  +  $res->sal_nov_rpt_creditos ;
-	                        break;
-	                    case 12:
-	                        $_saldo_mes_1 =  $_saldo_mes_1  + $res->sal_dic_rpt_creditos ;
-	                        break;
-	                }
-	                
-	                
-	                
-	                $html.='<td style="font-size: 11px;  text-align: center;">'.'RENTA'.'</td>';
-	                $_base_imponible_renta = $_base_imponible_renta +  $res->impuestos_baseimponible;
-	                $_valor_retenido_renta =  $_valor_retenido_renta +  $res->impuestos_valorretenido;
-	                
-	            }
-	            else
-	            {
-	                $html.='<td style="font-size: 11px;  text-align: center;">'.'IVA'.'</td>';
-	                $_base_imponible_iva = $_base_imponible_iva +  $res->impuestos_baseimponible;
-	                $_valor_retenido_iva =  $_valor_retenido_iva +  $res->impuestos_valorretenido;
-	                
-	            }
-	            
-	            $html.='<td style="font-size: 12px; text-align: center;">'.$res->impuesto_codigoretencion.'</td>';
-	            $html.='<td style="font-size: 12px; text-align: right;">' .'$  ' .$res->impuestos_baseimponible.'</td>';
-	            $html.='<td style="font-size: 12px; text-align: right;">'.$res->impuesto_porcentaje.'</td>';
-	            $html.='<td style="font-size: 12px; text-align: right;">'.'$  '.$res->impuestos_valorretenido.'</td>';
-	            $_base_imponible = $_base_imponible +  $res->impuestos_baseimponible;
-	            $_valor_retenido =  $_valor_retenido +  $res->impuestos_valorretenido;
-	            
-	            $html.='</tr>';
-	            
-	            
-	        }
->>>>>>> branch 'master' of https://github.com/mannyalbert81/rp_c.git
 	        
 	        
 	        $html.='</tbody>';

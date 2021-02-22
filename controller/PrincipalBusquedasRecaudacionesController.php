@@ -243,6 +243,456 @@ class PrincipalBusquedasRecaudacionesController extends ControladorBase{
 	    
 	    echo json_encode($json_data);
 	}
+	
+	/**
+	 * @author dc
+	 * @desc 2020-12-18
+	 */
+	public function cargaBancosLocales(){
+	    
+	    $bancos = null;
+	    $bancos = new BancosModel();
+	    
+	    $query = "SELECT id_bancos, nombre_bancos FROM public.tes_bancos WHERE local_bancos = true ORDER BY nombre_bancos ";
+	    
+	    $resulset = $bancos->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){	        
+	        echo json_encode(array('data'=>$resulset));	        
+	    }
+	}
+	
+	/**
+	 * @author dc
+	 * @desc 2020-12-18
+	 */
+	public function cargaTiposCreditos(){
+	    
+	    $bancos = null;
+	    $bancos = new BancosModel();
+	    
+	    $query = "SELECT id_tipo_creditos, nombre_tipo_creditos FROM public.core_tipo_creditos WHERE 1 = 1 ORDER BY nombre_tipo_creditos ";
+	    
+	    $resulset = $bancos->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        echo json_encode(array('data'=>$resulset));
+	    }
+	    
+	}
+	
+	/**
+	 * @author dc
+	 * @desc 2020-12-21
+	 */
+	public function obtenerResumenDescuentosContable()
+	{
+	    ob_start();
+	    session_start();	    
+	    $html = "";
+	    $recaudaciones = new RecaudacionesModel();
+	    $response = array();
+	    
+	    /**parametros post **/
+	    $id_entidad_patronal   = $_POST['id_entidad_patronal'];
+	    $mes_recaudacion   = $_POST['mes'];
+	    $anio_recaudacion  = $_POST['anio'];
+	    
+	    $mes_recaudacion   = str_pad($mes_recaudacion, 2,'0'); 
+	    
+	    $qryAportes    = "SELECT cc.id_ccomprobantes,
+        	trunc( sum(dd.debe_dcomprobantes),2) \"valor\", 
+            dd.descripcion_dcomprobantes,
+        	ee.codigo_plan_cuentas, 
+            ee.nombre_plan_cuentas
+        FROM core_descuentos_registrados_cabeza aa
+        INNER JOIN core_descuentos_registrados_detalle_aportes bb
+        	ON bb.id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza
+        INNER JOIN  ccomprobantes cc
+        	ON coalesce( split_part(coalesce(cc.referencia_doc_ccomprobantes,''),'|',2)::int8,0) = aa.id_descuentos_registrados_cabeza
+        INNER JOIN dcomprobantes dd
+        	ON dd.id_ccomprobantes = cc.id_ccomprobantes
+        INNER JOIN plan_cuentas ee
+        	ON ee.id_plan_cuentas = dd.id_plan_cuentas
+        WHERE 1 = 1 
+        	AND aa.procesado_descuentos_registrados_cabeza = true
+        	AND aa.erro_descuentos_registrados_cabeza = false
+        	AND cc.referencia_doc_ccomprobantes like '%|%'
+        	AND cc.aprobado_ccomprobantes = true
+        	AND dd.debe_dcomprobantes > 0
+        	AND aa.year_descuentos_registrados_cabeza = $anio_recaudacion
+        	AND aa.mes_descuentos_registrados_cabeza = 9 --$mes_recaudacion
+        	AND to_char(cc.fecha_ccomprobantes,'YYYYMM') = '202012'--'$anio_recaudacion.$mes_recaudacion'
+        	AND aa.id_entidad_patronal = $id_entidad_patronal
+        GROUP BY cc.id_ccomprobantes, dd.descripcion_dcomprobantes, ee.codigo_plan_cuentas, ee.nombre_plan_cuentas
+        ORDER BY cc.id_ccomprobantes";
+	    
+	    $rsAportes = $recaudaciones->enviaquery( $qryAportes );
+	    
+	    $qryCreditos    = "SELECT cc.id_ccomprobantes,
+        	trunc(sum(dd.debe_dcomprobantes),2) \"valor\",
+            dd.descripcion_dcomprobantes,
+        	ee.codigo_plan_cuentas,
+            ee.nombre_plan_cuentas
+        FROM core_descuentos_registrados_cabeza aa
+        INNER JOIN core_descuentos_registrados_detalle_creditos bb
+        	ON bb.id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza
+        INNER JOIN  ccomprobantes cc
+        	ON coalesce( split_part(coalesce(cc.referencia_doc_ccomprobantes,''),'|',2)::int8,0) = aa.id_descuentos_registrados_cabeza
+        INNER JOIN dcomprobantes dd
+        	ON dd.id_ccomprobantes = cc.id_ccomprobantes
+        INNER JOIN plan_cuentas ee
+        	ON ee.id_plan_cuentas = dd.id_plan_cuentas
+        WHERE 1 = 1
+        	AND aa.procesado_descuentos_registrados_cabeza = true
+        	AND aa.erro_descuentos_registrados_cabeza = false
+        	AND cc.referencia_doc_ccomprobantes like '%|%'
+        	AND cc.aprobado_ccomprobantes = true
+        	AND dd.debe_dcomprobantes > 0
+        	AND aa.year_descuentos_registrados_cabeza =  $anio_recaudacion
+        	AND aa.mes_descuentos_registrados_cabeza = 9 --$mes_recaudacion
+        	AND to_char(cc.fecha_ccomprobantes,'YYYYMM') = '202012'--'$anio_recaudacion.$mes_recaudacion'
+        	AND aa.id_entidad_patronal = $id_entidad_patronal
+        GROUP BY cc.id_ccomprobantes, dd.descripcion_dcomprobantes, ee.codigo_plan_cuentas, ee.nombre_plan_cuentas
+        ORDER BY cc.id_ccomprobantes";
+	   	    
+	    $rsCreditos = $recaudaciones->enviaquery( $qryCreditos );	       
+	    
+	    $html = '<div class="col-lg-12 col-md-12 col-sm-12"><div id="divtblHistorialMoras" class="">';
+	    $html .= '<table id="tbl_contable" class="table table-hover table-bordered">';
+	    $html .= '<thead>';
+	    $html .= '<thead>';
+	    $html .= '<tr style="">';
+	    $html .= '<th class="info">#</th>';
+	    $html .= '<th class="info">descripcion</th>';
+	    $html .= '<th class="info">valor</th>';
+	    $html .= '</tr>';
+	    $html .= '<tbody style="">';
+	    
+	    if (sizeof($rsAportes) > 0) {
+	        $contador = 1;
+	        $html .= '<tr>';
+	        $html .= '<td colspan="3">Resumen Aportes</td>';
+	        $html .= '</tr>';
+	        foreach ($rsAportes as $res) {
+	            
+	            $html .= '<tr>';
+	            $html .= '<td>' . $contador . '</td>';
+	            $html .= '<td>' . $res->codigo_plan_cuentas.' '.$res->nombre_plan_cuentas . '</td>';
+	            $html .= '<td>' . $res->valor . '</td>';
+	            $html .= '</tr>';
+	            $contador ++;
+	        }
+	    } else {
+	        $html .= '<tr>';
+	        $html .= '<td colspan="3">-</td>';
+	        $html .= '</tr>';
+	    }
+	    
+	    if (sizeof($rsCreditos) > 0) {
+	        $contador = 1;
+	        $html .= '<tr>';
+	        $html .= '<td colspan="3">Resumen Creditos</td>';
+	        $html .= '</tr>';
+	        foreach ($rsCreditos as $res) {
+	            
+	            $html .= '<tr>';
+	            $html .= '<td>' . $contador . '</td>';
+	            $html .= '<td>' . $res->codigo_plan_cuentas.' '.$res->nombre_plan_cuentas . '</td>';
+	            $html .= '<td>' . $res->valor . '</td>';
+	            $html .= '</tr>';
+	            $contador ++;
+	        }
+	    } else {
+	        $html .= '<tr>';
+	        $html .= '<td colspan="3">-</td>';
+	        $html .= '</tr>';
+	    }
+	    
+	    $html .= '</tbody>';
+	    $html .= '</table>';
+	    $html .= '</div></div>';
+	    
+	    $salida = ob_get_clean();
+	    if ( !empty($salida) ) {
+	        echo "Error en la generacion de Aportes" . $salida;
+	    } else {
+	        $response['html'] = $html;
+	        echo json_encode($response);
+	    }
+	}
+	
+	/**
+	 * @author dc
+	 * @desc 2020-12-22
+	 * @name getResumenDescuentosContable
+	 */
+	public function getResumenDescuentosContable()
+	{
+	    ob_start();
+	    session_start();
+	    $recaudaciones = new RecaudacionesModel();
+	    
+	    $data  = array();
+	    
+	    /**parametros post **/
+	    $id_entidad_patronal   = $_POST['id_entidad_patronal'];
+	    $mes_recaudacion   = $_POST['mes'];
+	    $anio_recaudacion  = $_POST['anio'];
+	    
+	    $mes_recaudacion   = str_pad($mes_recaudacion, 2,'0');
+	    
+	    $qryAportes    = "SELECT cc.id_ccomprobantes,
+        	trunc( sum(dd.debe_dcomprobantes),2) \"valor\",
+            dd.descripcion_dcomprobantes,
+        	ee.codigo_plan_cuentas,
+            ee.nombre_plan_cuentas
+        FROM core_descuentos_registrados_cabeza aa
+        INNER JOIN core_descuentos_registrados_detalle_aportes bb
+        	ON bb.id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza
+        INNER JOIN  ccomprobantes cc
+        	ON coalesce( SPLIT_PART(COALESCE(cc.referencia_doc_ccomprobantes,''),'|',2)::int8,0) = aa.id_descuentos_registrados_cabeza
+        INNER JOIN dcomprobantes dd
+        	ON dd.id_ccomprobantes = cc.id_ccomprobantes
+        INNER JOIN plan_cuentas ee
+        	ON ee.id_plan_cuentas = dd.id_plan_cuentas
+        WHERE 1 = 1
+        	AND aa.procesado_descuentos_registrados_cabeza = true
+        	AND aa.erro_descuentos_registrados_cabeza = false
+        	AND cc.referencia_doc_ccomprobantes like '%|%'
+        	AND cc.aprobado_ccomprobantes = true
+        	AND dd.debe_dcomprobantes > 0
+        	AND aa.year_descuentos_registrados_cabeza = $anio_recaudacion
+        	AND aa.mes_descuentos_registrados_cabeza = 9 --$mes_recaudacion
+        	AND to_char(cc.fecha_ccomprobantes,'YYYYMM') = '202012'--'$anio_recaudacion.$mes_recaudacion'
+        	AND aa.id_entidad_patronal = $id_entidad_patronal
+        GROUP BY cc.id_ccomprobantes, dd.descripcion_dcomprobantes, ee.codigo_plan_cuentas, ee.nombre_plan_cuentas
+        ORDER BY cc.id_ccomprobantes";
+	    
+	    $rsAportes = $recaudaciones->enviaquery( $qryAportes );    
+	    
+	    
+	    $qryCreditos    = "SELECT
+        aa.id_descuentos_registrados_cabeza,
+	    cc.id_ccomprobantes,
+	    SUM(trunc( dd.haber_dcomprobantes,2) )\"valor\",
+	    dd.descripcion_dcomprobantes,
+	    ee.codigo_plan_cuentas,
+	    ee.nombre_plan_cuentas,
+	    ff.id_tipo_creditos
+	    FROM core_descuentos_registrados_cabeza aa
+	    INNER JOIN core_descuentos_registrados_detalle_creditos bb
+	    ON bb.id_descuentos_registrados_cabeza = aa.id_descuentos_registrados_cabeza
+	    INNER JOIN  ccomprobantes cc
+	    ON coalesce( split_part(coalesce(cc.referencia_doc_ccomprobantes,''),'|',2)::int8,0) = aa.id_descuentos_registrados_cabeza
+	    INNER JOIN dcomprobantes dd
+	    ON dd.id_ccomprobantes = cc.id_ccomprobantes
+	    INNER JOIN plan_cuentas ee
+	    ON ee.id_plan_cuentas = dd.id_plan_cuentas
+	    inner join core_tabla_amortizacion_parametrizacion ff
+	    on ff.id_plan_cuentas = dd.id_plan_cuentas
+	    WHERE 1 = 1
+	    AND aa.procesado_descuentos_registrados_cabeza = true
+	    AND aa.erro_descuentos_registrados_cabeza = false
+	    AND cc.referencia_doc_ccomprobantes like '%|%'
+	        AND cc.aprobado_ccomprobantes = true
+	        --AND dd.ha_dcomprobantes > 0
+	        and ff.tipo_tabla_amortizacion_parametrizacion = 0
+	        AND aa.year_descuentos_registrados_cabeza = $anio_recaudacion
+	        AND aa.mes_descuentos_registrados_cabeza = 9 --$mes_recaudacion
+	        AND to_char(cc.fecha_ccomprobantes,'YYYYMM') = '202012'--'$anio_recaudacion.$mes_recaudacion'
+	            AND aa.id_entidad_patronal = $id_entidad_patronal
+        GROUP BY aa.id_descuentos_registrados_cabeza,
+            cc.id_ccomprobantes,
+            dd.descripcion_dcomprobantes,
+            ee.codigo_plan_cuentas,
+            ee.nombre_plan_cuentas,
+            ff.id_tipo_creditos
+        ORDER BY cc.id_ccomprobantes";
+	    
+	    $rsCreditos = $recaudaciones->enviaquery( $qryCreditos );
+	    
+	    $data['aportes']   = sizeof($rsAportes) > 0 ? $rsAportes : array();
+	    $data['creditos']  = sizeof($rsCreditos) > 0 ? $rsCreditos : array();
+	    
+	    $salida = ob_get_clean();
+	    if ( !empty($salida) ) {
+	        echo "Error en la Busqueda de Resumen Contable" . $salida;
+	    } else {
+	        echo json_encode( $data );
+	    }
+	}
+	
+	/**
+	 * @author dc
+	 * @desc 2020-12-22
+	 * @name getResumenDescuentosContable
+	 */
+	public function cruzarResumenDescuentosContable()
+	{
+	    ob_start();
+	    session_start();
+	   
+	    $data  = array();
+	    
+	    /**parametros post **/
+	    #$id_entidad_patronal   = $_POST['id_entidad_patronal'];
+	    #$mes_recaudacion   = $_POST['mes'];
+	    #$anio_recaudacion  = $_POST['anio'];
+	    
+	    $data['value']=123456789;
+	    
+	    $salida = ob_get_clean();
+	    if ( !empty($salida) ) {
+	        echo "Error en la generacion de Aportes" . $salida;
+	    } else {
+	        echo json_encode( $data );
+	    }
+	}
+	
+	/***
+	 * @author dc
+	 * @desc 2020-12-28	 
+	 */
+	public function insertar_valores_ingreso_bancos(){
+	    
+	    if(!isset($_SESSION)){
+	        session_start();
+	    }
+	    
+	    $recaudaciones = New RecaudacionesModel();
+	    
+	    $recaudaciones->beginTran();
+	    
+	    try{
+	        
+	        $resp  = array();
+	        
+	        /** llegada de paramatros de la vista **/
+	        $id_entidad_patronal   = $_POST['id_entidad_patronal'];
+	        $id_comprobantes   = $_POST['id_comprobantes'];
+	        $id_bancos     = $_POST['id_bancos'];
+	        $anio          = $_POST['anio'];
+	        $mes           = $_POST['mes'];
+	        $fecha_deposito   = $_POST['fecha_deposito'];
+	        $fecha_contable   = $_POST['fecha_contable'];
+	        $referencia    = $_POST['referencia'];
+	        $valor         = $_POST['valor'];
+	        $descripcion   = $_POST['descripcion'];
+	        $diferencia    = $_POST['diferencia'];
+	        
+	        $usuario_usuarios  = $_SESSION['id_usuarios'];
+	        
+	        $detalle = json_decode($_POST["detalle"]);        
+	        
+	        #validar el id comprobantes para cuando sea ingreso o actualizacion
+	        
+	        //creacion de la variable parametros
+	        $parametros = "";
+	        $parametros .= $id_entidad_patronal.",";
+	        $parametros .= $id_bancos.",";
+	        $parametros .= $mes.",";
+	        $parametros .= $anio.",";
+	        $parametros .= "'".$fecha_deposito."',";
+	        $parametros .= "'".$fecha_contable."',";
+	        $parametros .= "'".$referencia."',";
+	        $parametros .= "'".$valor."',";
+	        $parametros .= "'".$diferencia."',";
+	        $parametros .= "'".$descripcion."',";
+	        $parametros .= "null,";	//id comprobantes
+	        $parametros .= "null,";	//id comprobantes reverso
+	        $parametros .= "'".date('Y-m-d')."',";
+	        $parametros .= "'".$usuario_usuarios."',";
+	        $parametros .= "1,"; //es_banco_ingreso
+	        $parametros .= "1"; //estatus
+	        
+	        $funcion = "core_ins_ingreso_bancos_cabeza";	        
+	        
+	        // la cabecera se genera
+	        $sqRecaudaciones    = $recaudaciones->getconsultaPG($funcion, $parametros);
+	        $resultado  = $recaudaciones->llamarconsultaPG($sqRecaudaciones);
+	        
+	        $id_ingreso_bancos_cabeza = $resultado[0];
+	        
+	        if( !empty(error_get_last()) ){
+	            throw new Exception( error_get_last()['message'] );
+	        }
+	        	        
+	        $auxDetalle    = $this->ingreso_bancos_detalle($id_ingreso_bancos_cabeza, $detalle);
+	        
+	        if( $auxDetalle['error'] ){
+	            throw new Exception( $auxDetalle['mensaje'] );
+	        }
+	       
+	        
+	        $resp['estatus']   = "OK";
+	        $resp['icon']      = "success";
+	        $resp['mensaje']   = "Datos generados";
+	        $recaudaciones->endTran('COMMIT');
+	        echo json_encode($resp);
+	      	        
+	    } catch (Exception $ex) {
+	        $recaudaciones->endTran();
+	        echo '<message> Error Ingreso bancos '.$ex->getMessage().' <message>';
+	    }
+	    	    
+	}
+	
+	/**
+	 * @author dc
+	 * @desc 2020-12-28
+	 * @param array $paramsCab
+	 * @return boolean[]|string[]|boolean[]|mixed[]|boolean[]|string[]|mixed[]
+	 */
+	public function ingreso_bancos_detalle( int $id_cabecera, array $detalle_pagos ){
+	    
+	    if(!isset($_SESSION)){
+	        session_start();
+	    }
+	    
+	    $recaudaciones = new RecaudacionesModel();
+	    
+	    $response  = array();	    
+	    $detalle   = array();	    
+	    
+	    if( empty( $detalle_pagos )  ){ return array( 'error'=>true, 'mensaje'=>"Detalle pago se encuentra vacia"); }
+	    
+	    $funcionDetalle    = "core_ins_ingreso_bancos_detalle";
+	    foreach($detalle_pagos as $res){
+	        
+	        $detalle['id_cabeza']      = $id_cabecera;
+	        $detalle['identificador']  = $res->identificador;
+	        $detalle['identificador_descripcion']  = $res->nombre_identificador;
+	        $detalle['descripcion']    = $res->razon;
+	        $detalle['valor']          = $res->valor;
+	        $detalle['id_estatus']     = 1;
+	        
+	        $parametrosDetalle  = "'".join("','", $detalle)."'";
+	        $sqDetalle  = $recaudaciones->getconsultaPG($funcionDetalle, $parametrosDetalle);
+	        
+	        $recaudaciones->llamarconsultaPG($sqDetalle);
+	        
+	        echo "ingresa aqui";
+	        
+	        if( !empty( pg_last_error() ) ){
+	            break;
+	        }
+	    }
+	    
+	    $error = error_get_last();
+	    if( !empty( $error ) ){
+	        $response['error']     = true;
+	        $response['mensaje']   = $error['message'];
+	        return $response;
+	    }
+	    
+	    $response['error']     = false;
+	    $response['mensaje']   = "";
+	    
+	    return $response;
+	    
+	}
+	
 }
 
 	

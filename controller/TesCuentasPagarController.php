@@ -1362,7 +1362,7 @@ class TesCuentasPagarController extends ControladorBase{
 	    $_fechaDocumento = new DateTime($_auxFecha); 
 	            
 	    /** VARIABLES DE XML **/
-	    $_ambiente = 1; //1 pruebas  2 produccion
+	    $_ambiente = 2; //1 pruebas  2 produccion
 	    $_tipoEmision = 1; //1 emision normal deacuerdo a la tabla 2 SRI
 	    $_rucEmisor  = $rsConsulta3[0]->ruc_entidades;
 	    $_razonSocial = $rsConsulta3[0]->razon_social_entidades;
@@ -1715,7 +1715,19 @@ class TesCuentasPagarController extends ControladorBase{
 	    
 	    $comprobante = new \Shara\ComprobantesController($config); //*configurar ruta en carpeta vendor**/-- autoload_static.php
 	    /** tener en cuenta la ruta de archivos **/
-	    $clave = '0402202007179260854600110010010000050071234567812';	    
+	    
+		//MAYCOL
+		$clave = '2610202007179170037600120010010000095511234567818';	
+		
+		$aux = $comprobante->autorizacionXml($clave);
+	    var_dump($aux);
+	    exit();
+		die();
+		//TERMINA MAYCOL
+		
+		
+		
+		$clave = '0402202007179260854600110010010000050071234567812';	    
 	    $xml = file_get_contents($config['generados'] . DIRECTORY_SEPARATOR . $clave.'.xml', FILE_USE_INCLUDE_PATH);
 	    $aux = $comprobante->validarFirmarXml($xml, $clave);	    
 	    var_dump($aux);
@@ -1754,7 +1766,7 @@ class TesCuentasPagarController extends ControladorBase{
 	        'url_produccion' => 'https://cel.sri.gob.ec',
 	        'firmados' => 'DOCUMENTOSELECTRONICOS/docFirmados',
 	        'autorizados' => 'DOCUMENTOSELECTRONICOS/docAutorizados',
-	        'noautorizados' => 'docNoAutorizados',
+	        'noautorizados' => 'DOCUMENTOSELECTRONICOS/docNOAutorizados',
 	        'generados' => 'DOCUMENTOSELECTRONICOS/docGenerados',
 	        'pdf' => 'DOCUMENTOSELECTRONICOS/docPdf',
 	        'logo' => 'DOCUMENTOSELECTRONICOS/logo.png1',
@@ -2515,14 +2527,16 @@ WHERE id_cuentas_pagar_impuestos = $id_cuentas_pagar_impuestos";
 	    
 	    $respuesta = array();
 	    $resp  = array();
-	    $resp['claveAcceso']   = '';
-	    
-	    $cuentasPagar = new CuentasPagarModel();
+	    $resp['claveAcceso']   = '2501202107179170037600120010010000097721234567810'; # array(2) { ["Archivo"]=> string(0) "" ["xml"]=> string(32) " Archivo Xml RECIBIDO AUTORIZADO" }  '2309202007179170037600120010010000092441234567817';
+		
+		$cuentasPagar = new CuentasPagarModel();
 	    
 	    /** COMIENZA PROCESO XML CON SRI**/
 	    $errorXml = false;	    
 	    
 	    $clave = ( array_key_exists('claveAcceso', $resp) ) ? $resp['claveAcceso'] : '' ;
+		
+		if( empty($clave) ){ die('termina proceso'); } 
 	    
 	    require_once __DIR__ . '/../vendor/autoload.php';
 	    
@@ -2589,76 +2603,12 @@ WHERE id_cuentas_pagar_impuestos = $id_cuentas_pagar_impuestos";
 	        
 	        /** agregar datos a tabla errores de retenciones **/
 	    }else{
-	        $claveAcceso = $resp['claveAcceso'];
+			$claveAcceso = $resp['claveAcceso'];
 	        $_columnaActualizar = " autorizado_retenciones = true ";
 	        $_tablaActualizar   = " tri_retenciones";
 	        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
 	        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
 	    }
-	    
-	    /** actualizacion de la fecha de autorizacion del xml **/
-	    if( isset($fechaAutorizado) ){
-	        
-	        $claveAcceso = $resp['claveAcceso'];
-	        $_columnaActualizar = " fecha_autorizacion = '$fechaAutorizado' ";
-	        $_tablaActualizar   = " tri_retenciones";
-	        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
-	        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
-	        
-	    }
-	    
-	    var_dump($respuesta); 
-	}
-	
-	//dc 2020/07/23 funcion para Autorizacion de XML RETENCION
-	public function AutorizarXmlRetencion_ClaveAcceso(){
-	    
-	    $respuesta = array();
-	    $resp  = array();
-	    $resp['claveAcceso']   = '';
-	    
-	    $cuentasPagar = new CuentasPagarModel();
-	    
-	    /** COMIENZA PROCESO XML CON SRI**/
-	    $errorXml = false;
-	    
-	    $clave = ( array_key_exists('claveAcceso', $resp) ) ? $resp['claveAcceso'] : '' ;
-	    
-	    require_once __DIR__ . '/../vendor/autoload.php';
-	    
-	    $config = $this->getConfigXml();
-	    
-	    $comprobante = new \Shara\ComprobantesController($config); //*configurar ruta en carpeta vendor**/-- autoload_static.php
-	    /** tener en cuenta la ruta de archivos **/
-	   
-	    $finalresp = $comprobante->autorizacionXml($clave);
-	    //$finalresp = null;. //para pruebas
-	    //$finalresp['error'] = false; //para pruebas
-	    if($finalresp['error'] === true ){
-	        /** aqui poner senetecia en caso de haber errror **/
-	        $respuesta['xml'] = " Archivo Xml RECIBIDO NO AUTORIZADO";
-	        $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
-	        $errorXml = true;
-	    }else{
-	        
-	        $respuesta['xml'] = " Archivo Xml RECIBIDO AUTORIZADO";
-	        $respuesta['Archivo'] = ( array_key_exists('mensaje', $finalresp) ) ? $finalresp['mensaje'] : '' ;
-	        
-	        $fechaAutorizado = $finalresp['fecauto'];
-	    }
-	    
-	    /** actualizacion si existe algun error **/
-	    if( $errorXml ){
-	        
-	        $claveAcceso = $resp['claveAcceso'];
-	        $_columnaActualizar = " autorizado_retenciones = false ";
-	        $_tablaActualizar   = " tri_retenciones";
-	        $_whereActualizar   = " infotributaria_claveacceso = '$claveAcceso'";
-	        $cuentasPagar->ActualizarBy($_columnaActualizar, $_tablaActualizar, $_whereActualizar);
-	        
-	        /** agregar datos a tabla errores de retenciones **/
-	    }
-	    
 	    /** actualizacion de la fecha de autorizacion del xml **/
 	    if( isset($fechaAutorizado) ){
 	        
@@ -2672,23 +2622,6 @@ WHERE id_cuentas_pagar_impuestos = $id_cuentas_pagar_impuestos";
 	    
 	    var_dump($respuesta);
 	}
-	
-	public function obtenerDigitoVerificador_ClaveAcceso(){
-	    
-	    $_strClaveAcceso = '230920200717917003760012001001000009244123456781'; #7
-	    
-	    $_digitoVerificador = $this->getDigVerificador($_strClaveAcceso);
-	    
-	    if( $_digitoVerificador === "" ){
-	        return "";
-	    }
-	    
-	    $_strClaveAcceso = $_strClaveAcceso.$_digitoVerificador;
-	    
-	    echo "NUEVA CLAVE --> '",$_strClaveAcceso,"'";
-	}
-	
-	
 		
 }
 ?>

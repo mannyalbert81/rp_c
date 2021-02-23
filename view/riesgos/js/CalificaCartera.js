@@ -7,12 +7,14 @@ $(document).ready(function(){
 $("#btnDetalles").on("click",function(event){
 	
 
+
+
 		$anioProcesos = $("#anio_procesos"),
 		$mesProcesos = $("#mes_procesos"),
 		$divResultados = $("#div_detalle_procesos");
 	$divResultados.html();
 		
-	
+		
 	if($anioProcesos.val() == ''){
 		$anioProcesos.notify("Digite anio",{ position:"buttom left", autoHideDelay: 2000});
 		return false;
@@ -28,6 +30,18 @@ $("#btnDetalles").on("click",function(event){
 	}
 	
 	
+		  swal("Calificando Cartera", {
+	      icon: "success",
+	      buttons: false,
+	      timer: 5000
+	    });
+		
+		
+		    		
+	 		$('#div_detalle_procesos').show(8000);
+		
+		
+
 	console.log("hola");
 	$.ajax({
 		 url:"index.php?controller=Riesgos&action=procesar_calificacion",
@@ -37,11 +51,6 @@ $("#btnDetalles").on("click",function(event){
 		
 	 }).done(function(x){
 	
-		 console.log(x);
-		 if ( x.hasOwnProperty( 'tabladatos' ) || ( x.tabladatos != '' ) ) {
-			 $divResultados.html(x.tabladatos);
-			 setTableStyle("tbl_detalle_diario");
-		 };
 		 
 		 
 		 

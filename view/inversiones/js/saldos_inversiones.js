@@ -1,17 +1,21 @@
 $(document).ready(function(){ 	 
 	   
 	load_inversiones();
+	cargaCalificacionEmisor();
+	cargaCalificacionRiesgos();
 	cargaTipoInstrumento();
 });
 
 var view = view || {};
 
 view.id_emisor	= $("#id_emisor");
+view.id_ingreso_inversiones	= $("#id_ingreso_inversiones");
 view.tipo_identificacion	= $("#tipo_identificacion");
 view.identificacion_emisor	= $("#identificacion_emisor");
 view.numero_instrumento	= $("#numero_instrumento");
 view.tipo_instrumento	= $("#tipo_instrumento");
-view.tipo_renta	= $("#tipo_renta");
+view.calificacion_emisor	= $("#calificacion_emisor"); 
+view.calificacion_riesgos	= $("#calificadora_riesgo");
 view.fecha_emision	= $("#fecha_emision");
 view.fecha_compra	= $("#fecha_compra");
 view.fecha_vencimiento	= $("#fecha_vencimiento");
@@ -28,6 +32,64 @@ view.base_tasa_capital 	= $("#base_tasa_capital");
 view.base_tasa_interes 	= $("#base_tasa_interes");
 view.periodo_gracia 	= $("#periodo_gracia");
 view.estado_registro 	= $("#estado_registro");
+
+
+
+var cargaCalificacionEmisor	= function (){
+	
+	let $ddlCalificacionEmisor = view.calificacion_emisor;
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=SaldosInversiones&action=cargaCalificacionEmisor",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlCalificacionEmisor.empty();
+		$ddlCalificacionEmisor.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$ddlCalificacionEmisor.append("<option value= " +value.id_calificaciones +" >" + value.descripcion_calificaciones  + "</option>");	
+  		});
+		
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlCalificacionEmisor.empty();
+	})
+	
+}
+
+
+var cargaCalificacionRiesgos	= function (){
+	
+	let $ddlCalificacionRiesgos = view.calificacion_riesgos;
+	
+	$.ajax({
+		beforeSend:function(){},
+		url:"index.php?controller=SaldosInversiones&action=cargaCalificacionRiesgos",
+		type:"POST",
+		dataType:"json",
+		data:null
+	}).done(function(datos){		
+		
+		$ddlCalificacionRiesgos.empty();
+		$ddlCalificacionRiesgos.append("<option value='0' >--Seleccione--</option>");
+		
+		$.each(datos.data, function(index, value) {
+			$ddlCalificacionRiesgos.append("<option value= " +value.id_calificaciones_riesgos +" >" + value.descripcion_calificaciones_riesgos  + "</option>");	
+  		});
+		 
+	}).fail(function(xhr,status,error){
+		var err = xhr.responseText
+		console.log(err)
+		$ddlCalificacionRiesgos.empty();
+	})
+	
+}
+
 
 var cargaTipoInstrumento	= function (){
 	
@@ -55,6 +117,86 @@ var cargaTipoInstrumento	= function (){
 	})
 	
 }
+
+var cargarDetallesNumeroInstrumento	= function(a){
+	
+	let id_ingreso_inversiones	= a;
+	
+	$.ajax({
+		url:'index.php?controller=SaldosInversiones&action=verDetallesNumeroInstrumento',
+		dataType:'json',
+		type:'POST',
+		data:{'id_ingresos_inversiones':id_ingreso_inversiones}
+		}).done(function(x){
+			let data	= x[0];
+			//$("#lbl_tipo_identificacion").
+			console.log(x)
+		}).fail(function(xhr, status, error){
+			console.log(xhr.responseText)
+		});
+	
+}
+
+/***
+ * @desc fn que permite generar autocomplete numero instrumento
+ * @param e
+ * @returns
+ */
+view.numero_instrumento.on("focus",function(e) {
+	
+	let _elemento = $(this);
+	
+    if ( !_elemento.data("autocomplete") ) {
+    	    	
+    	_elemento.autocomplete({
+    		minLength: 2,    	    
+    		source:function (request, response) {
+    			$.ajax({
+    				url:"index.php?controller=SaldosInversiones&action=autompleteNumeroInstrumento",
+    				dataType:"json",
+    				type:"GET",
+    				data:{term:request.term},
+    			}).done(function(x){
+    				
+    				response(x); 
+    				
+    			}).fail(function(xhr,status,error){
+    				var err = xhr.responseText
+    				console.log(err)
+    			})
+    		},
+    		select: function (event, ui) {
+     	       	    			
+    			if(ui.item.id == ''){
+    				view.id_emisor.val('');
+        			view.identificacion_emisor.val('');
+    				return;
+    			}
+    			
+    			view.id_ingreso_inversiones.val(ui.item.id);
+    			view.numero_instrumento.val(ui.item.value);
+    			
+    			cargarDetallesNumeroInstrumento( ui.item.id );
+    			    			     	     
+     	    },
+     	   //appendTo: "#mod_distribucion",
+     	   change: function(event,ui){
+     		   
+     		   if(ui.item == null){
+     			   
+     			  view.numero_instrumento.notify("Digite Numero Instrumento correcta",{ position:"top center"});
+     			  
+     			  view.id_ingreso_inversiones.val('0');
+     			  view.numero_instrumento.val('');     			     			 
+     		   }
+     	   }
+    	
+    	}).focusout(function() {
+    		
+    	})
+    }
+    
+})
 
 
 /***

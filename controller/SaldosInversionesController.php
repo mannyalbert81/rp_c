@@ -45,12 +45,12 @@ class SaldosInversionesController extends ControladorBase{
 	/*** dc 2021-02-18	 **/
 	public function cargaTipoInstrumento(){
 	    
-	    $entidad_patronal = null;
-	    $entidad_patronal = new EntidadPatronalParticipesModel();
+	    $inversiones = null;
+	    $inversiones = new InversionesModel();
 	    
 	    $query = "SELECT id_tipos_instrumentos, nombre_tipos_instrumentos FROM inver_tipos_instrumentos WHERE 1=1 ORDER BY nombre_tipos_instrumentos ";
 	    
-	    $resulset = $entidad_patronal->enviaquery($query);
+	    $resulset = $inversiones->enviaquery($query);
 	    
 	    if(!empty($resulset) && count($resulset)>0){
 	        
@@ -58,7 +58,70 @@ class SaldosInversionesController extends ControladorBase{
 	        
 	    }
 	}
-	/*** end dc 2021-02-18	 **/
+	/*** end dc 2021-02-18	 **/ 
+	
+	/*** dc 2021-02-23	 **/
+	public function cargaCalificacionEmisor(){
+	    
+	    $inversiones = null;
+	    $inversiones = new InversionesModel();
+	    
+	    $query = "SELECT id_calificaciones, codigo_calificaciones, descripcion_calificaciones FROM inver_calificaciones WHERE 1=1 ORDER BY id_calificaciones ";
+	    
+	    $resulset = $inversiones->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	/*** end dc 2021-02-23	 **/ 
+	
+	/*** dc 2021-02-23	 **/
+	public function cargaCalificacionRiesgos(){
+	    
+	    $inversiones = null;
+	    $inversiones = new InversionesModel();
+	    
+	    $query = "SELECT id_calificaciones_riesgos, descripcion_calificaciones_riesgos FROM public.inver_calificaciones_riesgos WHERE 1=1 ORDER BY id_calificaciones_riesgos ";
+	    
+	    $resulset = $inversiones->enviaquery($query);
+	    
+	    if(!empty($resulset) && count($resulset)>0){
+	        
+	        echo json_encode(array('data'=>$resulset));
+	        
+	    }
+	}
+	/*** end dc 2021-02-23	 **/ 
+	
+	/*** dc 2021-02-23	 **/
+	public function verDetallesNumeroInstrumento(){
+	    
+	    $inversiones = null;
+	    $inversiones = new InversionesModel();
+	    
+	    $id_ingresos_inversiones   = isset($_POST['id_ingresos_inversiones']) ? $_POST['id_ingresos_inversiones'] : 0 ;
+	    
+	    if ( $id_ingresos_inversiones == 0 ){ echo "<error> Parametros Recibidos <error>"; return; }
+	    
+	    $col1  = " aa.id_ingreso_inversiones, bb.id_emisores, bb.ruc_emisores, bb.nombre_emisores, 
+                aa.numero_instrumento_ingreso_inversiones, aa.tipo_identificacion_ingreso_inversiones, 
+                aa.tipo_renta_ingreso_inversiones, aa.fecha_compra_ingreso_inversiones";
+	    $tab1  = " public.inver_ingreso_inversiones aa INNER JOIN public.inver_emisores bb ON bb.id_emisores = aa.id_emisores";
+	    $whe1  = " aa.id_ingreso_inversiones = $id_ingresos_inversiones ";
+	    $id1   = " bb.nombre_emisores";
+	    
+	    $rsInversiones = $inversiones->getCondiciones($col1, $tab1, $whe1, $id1);   
+	    
+	    if(!empty($rsInversiones) && count($rsInversiones)>0){
+	        
+	        echo json_encode(array('data'=>$rsInversiones));
+	        
+	    }
+	}
+	/*** end dc 2021-02-23	 **/
 	
 	/*** dc 2021-02-18	 **/
 	public function autompleteEmisores(){
@@ -367,7 +430,50 @@ class SaldosInversionesController extends ControladorBase{
 	}
 	/** end dc 2021/02/19 **/
 
-	
+	/*** dc 2021-02-23	 **/
+	public function autompleteNumeroInstrumento(){
+	    
+	    $planCuentas = new PlanCuentasModel();
+	    
+	    //print_r($_REQUEST);
+	    
+	    if(isset($_GET['term'])){
+	        
+	        $numero_instrumento    = $_GET['term'];
+	        
+	        $columnas = " aa.id_ingreso_inversiones, bb.id_emisores, bb.ruc_emisores, bb.nombre_emisores, aa.numero_instrumento_ingreso_inversiones";
+	        $tablas = " public.inver_ingreso_inversiones aa INNER JOIN public.inver_emisores bb ON bb.id_emisores = aa.id_emisores ";
+	        $where = " numero_instrumento_ingreso_inversiones LIKE '$numero_instrumento%' ";
+	        $id = " aa.numero_instrumento_ingreso_inversiones ";
+	        $limit = " LIMIT 10";
+	       
+	        $rsEmisores = $planCuentas->getCondicionesPag($columnas,$tablas,$where,$id,$limit);
+	        
+	        $respuesta = array();
+	        
+	        if(!empty($rsEmisores) ){
+	            
+	            foreach ($rsEmisores as $res){
+	                
+	                $_emisor = new stdClass;
+	                $_emisor->id = $res->id_ingreso_inversiones;
+	                $_emisor->value = $res->numero_instrumento_ingreso_inversiones;
+	                $_emisor->label = $res->ruc_emisores.' | '.$res->numero_instrumento_ingreso_inversiones;
+	                $_emisor->nombre = $res->nombre_emisores;
+	                
+	                $respuesta[] = $_emisor;
+	            }
+	            
+	            echo json_encode($respuesta);
+	            
+	        }else{
+	            
+	            echo '[{"id":"","value":"Inversion No Encontrado"}]';
+	        }
+	        
+	    }
+	}
+	/*** end dc 2021-02-23	 **/
 	
 }
 ?>

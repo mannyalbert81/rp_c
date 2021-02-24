@@ -4,6 +4,9 @@ $(document).ready(function(){
 	cargaTipoInstrumento();
 });
 
+/**VARIABLES DE ARCHIVO**/
+var fecha = new Date();
+var yearFecha = fecha.getFullYear();
 var view = view || {};
 
 view.id_emisor	= $("#id_emisor");
@@ -102,7 +105,7 @@ view.identificacion_emisor.on("focus",function(e) {
      		   
      		   if(ui.item == null){
      			   
-     			  view.identificacion.notify("Digite Identificación correcta",{ position:"top center"});
+     			  view.identificacion_emisor.notify("Digite Identificación correcta",{ position:"top center"});
      			  
      			  view.id_emisor.val('');
      			  view.identificacion_emisor.val('');     			     			 
@@ -114,8 +117,71 @@ view.identificacion_emisor.on("focus",function(e) {
     	})
     }
     
-})
+});
 
+
+view.fecha_emision.inputmask("datetime",{
+	mask: "y-2-1", 
+     placeholder: "yyyy-mm-dd", 
+     leapday: "-02-29", 
+     separator: "-", 
+     clearIncomplete: true,
+	 rightAlign: true,		 
+	 yearrange: {
+			minyear: 1950,
+			maxyear: yearFecha
+	},
+	oncomplete:function(e){
+		view.fecha_compra.val( $(this).val() );
+	}
+});	
+
+view.fecha_compra.inputmask("datetime",{
+	mask: "y-2-1", 
+	placeholder: "yyyy-mm-dd", 
+	leapday: "-02-29", 
+	separator: "-", 
+	clearIncomplete: true,
+	rightAlign: true,		 
+	yearrange: {
+		minyear: 1950,
+		maxyear: yearFecha
+	}
+});	
+
+view.fecha_vencimiento.inputmask("datetime",{
+	mask: "y-2-1", 
+    placeholder: "yyyy-mm-dd", 
+    leapday: "-02-29", 
+    separator: "-", 
+    clearIncomplete: true,
+	rightAlign: true,		 
+	yearrange: {
+			minyear: 1950,
+			maxyear: yearFecha
+	},
+	oncomplete:function(e){
+		if( ( new Date( view.fecha_compra.val() ).getTime() >= new Date( $(this).val() ).getTime() )){
+			$(this).notify("Fec. Compra no puede ser Mayor a Fech. Vencimiento",{ position:"buttom left", autoHideDelay: 2000});
+			$(this).val('');
+			return false;
+	    }
+		generar_plazo_pago();
+	}
+});	
+
+/***
+ * @desc genera plazo de pago al ingresar fechas de compra y vencimiento
+ */
+var generar_plazo_pago	= function(){
+	
+	let fechaInicio = new Date( view.fecha_compra.val() ).getTime();
+	let fechaFin    = new Date( view.fecha_vencimiento.val() ).getTime();
+
+	let diff= fechaFin - fechaInicio;
+	diff	= diff/(1000*60*60*24);
+	view.plazo_pactado.val(diff);
+}
 
 var viewTabla = viewTabla || {};
 
@@ -126,7 +192,6 @@ viewTabla.params	= function(){
 	var extenddatapost = { };
 	return extenddatapost;
 };
-
 
 var idioma_espanol = {
 	    "sProcessing":     "Procesando...",
@@ -165,7 +230,7 @@ var load_inversiones	= function(){
 	    'serverSide': true,
 	    'serverMethod': 'post',
 	    'destroy' : true,
-	    'fixedHeader': true,
+	    /*'fixedHeader': true,*/
 	    'ajax': {
 	        'url':'index.php?controller=IngresoInversionesG2&action=dtMostrarInversiones',
 	        'data': function ( d ) {
@@ -208,13 +273,18 @@ var load_inversiones	= function(){
 	        {className: "dt-center", targets:[0] },
 	        {sortable: false, targets: [ 0,2,6,7,8] }
 	      ],
-		'scrollY': "80vh",
+		/*'scrollY': "80vh",
         'scrollCollapse':true,
         'fixedHeader': {
             header: true,
             footer: true
-        },
-        dom: "<'row'<'col-sm-6'<'box-tools pull-right'B>>><'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
+        },*/
+	    /*autoWidth:true,*//*251518*/
+        sScrollY: "600",
+        sScrollX: " 100% ",
+        sScrollXInner:" 200% ",
+        bScrollCollapse: true,
+        dom: "<'row'<'col-sm-6'<'box-tools pull-right'B>>><'row'<'col-sm-6'l><'col-sm-6'f>><'row'<' col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
         buttons: [
         	{ "extend": 'excelHtml5',  "titleAttr": 'Excel', "text":'<span class="fa fa-file-excel-o fa-2x fa-fw"></span>',"className": 'no-padding btn btn-default btn-sm' }
         ],
@@ -222,6 +292,7 @@ var load_inversiones	= function(){
 	 });
 		
 }
+
 
 
 var fn_insertar_inversiones	= function(){
@@ -388,7 +459,19 @@ var fn_insertar_inversiones	= function(){
 			data:parametros
 		}).done(function(x){
 			
-			console.log(x);
+			if( x.estatus == 'OK' ){				
+				swal({ title:"INVERSIONES",
+					text:'Inversión Ingresada',
+					icon:'success'
+				});
+			}else{
+				swal({ title:"INVERSIONES",
+					text:'Problemas al ingresar inversiones',
+					icon:'error'
+				});
+			}
+			
+			viewTabla.tabla.ajax.reload();
 			
 		}).fail(function(xhr, status, error){
 			//element.html('<span> ERROR al buscar datos encontrados.</span>');

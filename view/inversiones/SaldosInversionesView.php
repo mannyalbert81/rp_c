@@ -25,6 +25,34 @@
      .letrasize12{
         font-size: 12px;
      }
+     .bio-row{
+            width: 100%;
+            float: left;
+            margin-bottom:0px;
+            padding: 0 15px;
+    }
+       
+    h3.titulo{ 
+    	text-align: center;
+    	margin:0;	
+	}
+    	
+    .bio-row p {
+             margin: 0 0 1px;
+    }   
+        
+    .bio-row p span.tab{
+    	font-weight: bold;
+    	display: inline-block;
+    	width: 150px;
+    }
+    
+    .bio-row p span.tab2{
+    	font-weight: bold;
+    	display: inline-block;
+    	width: 130px;
+    }
+     
    </style>
  
 	</head>
@@ -78,6 +106,33 @@
         
         <div class="box-body">
         
+        	<div class="row">        	
+        		<div class="col-xs-12 col-lg-3 col-md-3 ">
+        			<div class="form-group">
+    	              <label for="numero_instrumento" class="control-label" >N&uacute;mero Instrumento:</label>
+    				  <input type="text" class="form-control" id="numero_instrumento" name="numero_instrumento" value="" >
+    				  <input type="hidden" class="form-control" id="id_ingreso_inversiones" name="id_ingreso_inversiones" value="" > 
+    				</div>  
+             	</div>
+         	</div>
+         	
+         	<div class="row">
+         		<div class="col-lg-12 col-md-12 col-xs-12">
+         			<div id="div_pnl_info_ingreso_inversiones">
+            			<h3 class="titulo">Informaci&oacute;n N&uacute;mero Instrumento</h3>
+            			<div class="box-footer no-padding">
+                    	<div class="bio-row"><p><span id="lbl_tipo_identificacion" class="tab">Tipo Identificaci&oacute;n: </span>{ANIO_DESCUENTOS}</p></div>
+                    	<div class="bio-row"><p><span id="lbl_identificacion" class="tab">Identificaci&oacute;n: </span>{MES_DESCUENTOS}</p></div>
+                    	<div class="bio-row"><p><span id="lbl_nombre_emisor" class="tab">Nombre Emisor: </span>{MES_DESCUENTOS}</p></div>
+                    	<div class="bio-row"><p><span id="lbl_tipo_instrumento" class="tab">Tipo Instrumento: </span>{ANIO_DESCUENTOS}</p></div>
+                    	<div class="bio-row"><p><span id="lbl_tipo_renta" class="tab">Tipo Renta: </span>{MES_DESCUENTOS}</p></div>	
+                    	<div class="bio-row"><p><span id="lbl_fecha_compra" class="tab">Fecha Compra: </span>{MES_DESCUENTOS}</p></div>	
+                    	</div>
+        			</div>
+         		</div>
+         		
+         	</div>
+         	        
         	<div class="row">
         	
         		<div class="col-xs-12 col-lg-3 col-md-3 ">
@@ -99,14 +154,7 @@
     	               <input type="hidden" id="id_emisor" value="0" />
     	            </div>
     			</div>
-        	
-        		<div class="col-xs-12 col-lg-3 col-md-3 ">
-        			<div class="form-group">
-    	              <label for="numero_instrumento" class="control-label" >N&uacute;mero Instrumento:</label>
-    				  <input type="text" class="form-control" id="numero_instrumento" name="numero_instrumento" value="" > 
-    				</div>  
-             	</div>
-             	
+        	             	
              	<div class="col-xs-12 col-lg-3 col-md-3 ">
              		<div class="form-group">
         			   <label for="tipo_instrumento" class="control-label">Tipo Instrumento:</label>
@@ -300,14 +348,16 @@
     	         <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="calificacion_emisor" class="control-label">Calificaci&oacute;n emisor:</label>
-                          <input type="text" class="form-control" id="calificacion_emisor" name="calificacion_emisor" value="" >
+                          <select name="calificacion_emisor" id="calificacion_emisor"  class="form-control" >        				  				
+        				  </select>
                      </div>
     		     </div>
     	         
     	         <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="calificadora_riesgo" class="control-label">Calificadora Riesgo:</label>
-                          <input type="text" class="form-control" id="calificadora_riesgo" name="calificadora_riesgo" value="" >
+                          <label for="calificadora_riesgo" class="control-label">Calificadora Riesgo:</label>                          
+                          <select name="calificadora_riesgo" id="calificadora_riesgo"  class="form-control" >        				  										
+        				  </select>
                      </div>
     		     </div>
     		     
@@ -561,10 +611,6 @@
  
  
  
-
-	
-	
- 
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
@@ -575,7 +621,7 @@
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>    
-    <script src="view/inversiones/js/saldos_inversiones.js?0.08"></script> 
+    <script src="view/inversiones/js/saldos_inversiones.js?0.11"></script> 
     
     
    

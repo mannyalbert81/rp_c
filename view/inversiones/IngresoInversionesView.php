@@ -25,6 +25,8 @@
      .letrasize12{
         font-size: 12px;
      }
+     
+         
    </style>
  
 	</head>
@@ -134,21 +136,21 @@
     	         <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="fecha_emision" class="control-label">Fecha Emisi&oacute;n:</label>
-                           <input type="date" class="form-control" id="fecha_emision" name="fecha_emision" value="" >
+                           <input type="text" class="form-control" id="fecha_emision" name="fecha_emision" value="" >
                      </div>
     		     </div>
     		     
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="fecha_compra" class="control-label">Fecha compra:</label>
-                           <input type="date" class="form-control" id="fecha_compra" name="fecha_compra" value="" >
+                           <input type="text" class="form-control" id="fecha_compra" name="fecha_compra" value="" >
                      </div>
     		     </div>
     		     
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="fecha_vencimiento" class="control-label">Fecha vencimiento:</label>
-                          <input type="date" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento" value="" >
+                          <input type="text" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento" value="" >
                      </div>
     		     </div>
              	
@@ -166,7 +168,7 @@
     	         <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="plazo_pactado" class="control-label">Plazo Pactado:</label>
-                           <input type="text" class="form-control" id="plazo_pactado" name="plazo_pactado" value="" >
+                           <input type="text" class="form-control" id="plazo_pactado" name="plazo_pactado" value="" readonly >
                      </div>
     		     </div>
     		     
@@ -373,10 +375,6 @@
  
  
  
-
-	
-	
- 
  	<?php include("view/modulos/footer.php"); ?>	
 
    <div class="control-sidebar-bg"></div>
@@ -384,10 +382,11 @@
    
     <?php include("view/modulos/links_js.php"); ?>
     <script src="view/bootstrap/plugins/iCheck/icheck.js"></script>
+    <script src="view/bootstrap/otros/inputmask_bundle/jquery.inputmask.bundle.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>    
-    <script src="view/inversiones/js/ingreso_inversiones.js?0.08"></script> 
+    <script src="view/inversiones/js/ingreso_inversiones.js?0.15"></script> 
     
     
    

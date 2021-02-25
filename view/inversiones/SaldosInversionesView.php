@@ -387,7 +387,7 @@
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_ren_vencido" class="control-label">Cuenta Contable Rend:</label>
-                          <input type="date" class="form-control" id="cuenta_contable_ren_vencido" name="cuenta_contable_ren_vencido" value="" >
+                          <input type="text" class="form-control" id="cuenta_contable_ren_vencido" name="cuenta_contable_ren_vencido" value="" >
                      </div>
     		     </div>
     		     
@@ -419,7 +419,7 @@
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_provision_acumulada_rendimiento" class="control-label">Cuenta Contable Prov Acum Rend:</label>
-                          <input type="date" class="form-control" id="cuenta_contable_provision_acumulada_rendimiento" name="cuenta_contable_provision_acumulada_rendimiento" value="" >
+                          <input type="text" class="form-control" id="cuenta_contable_provision_acumulada_rendimiento" name="cuenta_contable_provision_acumulada_rendimiento" value="" >
                      </div>
     		     </div>
     		     
@@ -432,7 +432,7 @@
     		     
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="valor_liquidado" class="control-label">Valor L&iacute;quidado :</label>
+                          <label for="valor_liquidado" class="control-label">Valor Liquidado :</label>
                           <input type="text" class="form-control" id="valor_liquidado" name="valor_liquidado" value="" >
                      </div>
     		     </div>
@@ -574,7 +574,7 @@
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>    
-    <script src="view/inversiones/js/saldos_inversiones.js?0.12"></script> 
+    <script src="view/inversiones/js/saldos_inversiones.js?0.17"></script> 
     
     
    

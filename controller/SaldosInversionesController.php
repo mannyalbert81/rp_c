@@ -108,7 +108,7 @@ class SaldosInversionesController extends ControladorBase{
 	    
 	    $col1  = " aa.id_ingreso_inversiones, bb.id_emisores, bb.ruc_emisores, bb.nombre_emisores, 
                 aa.numero_instrumento_ingreso_inversiones, aa.tipo_identificacion_ingreso_inversiones, 
-                aa.tipo_renta_ingreso_inversiones, aa.fecha_compra_ingreso_inversiones";
+                aa.tipo_renta_ingreso_inversiones, aa.fecha_compra_ingreso_inversiones, aa.valor_compra_ingreso_inversiones";
 	    $tab1  = " public.inver_ingreso_inversiones aa INNER JOIN public.inver_emisores bb ON bb.id_emisores = aa.id_emisores";
 	    $whe1  = " aa.id_ingreso_inversiones = $id_ingresos_inversiones ";
 	    $id1   = " bb.nombre_emisores";
@@ -330,7 +330,7 @@ class SaldosInversionesController extends ControladorBase{
 	/** end dc 2021/02/12 **/
 	
 	
-	/** end dc 2021/02/19 **/
+	/** end dc 2021/02/25 **/
 	public function IngresaSaldosInversiones(){
 	    
 	    session_start();
@@ -343,65 +343,100 @@ class SaldosInversionesController extends ControladorBase{
 	    try {
 	        
 	        #valores de la vista
-	        $tipo_identificacion   = $_POST['tipo_identificacion'];
-	        $id_emisor             = $_POST['id_emisor'];
-	        $numero_instrumento    = $_POST['numero_instrumento'];
-	        $id_tipo_instrumento   = $_POST['id_tipo_instrumento'];
-	        $tipo_renta        = $_POST['tipo_renta'];
-	        $fecha_emision     = $_POST['fecha_emision'];
-	        $fecha_compra      = $_POST['fecha_compra'];
-	        $fecha_vencimiento = $_POST['fecha_vencimiento'];
+	        //$numero_instrumento    = $_POST['numero_instrumento'];
+	        $id_ingreso_inversiones= $_POST['id_ingreso_inversiones'];
+	        $estado_inversion      = $_POST['estado_inversion'];
+	        $rango_vencimiento     = $_POST['rango_vencimiento'];
+	        $valor_contable        = $_POST['valor_contable'];
 	        $tasa_nominal      = $_POST['tasa_nominal'];
-	        $plazo_pactado     = $_POST['plazo_pactado'];
-	        $valor_nominal     = $_POST['valor_nominal'];
-	        $numero_acciones   = $_POST['numero_acciones'];
-	        $precio_compra     = $_POST['precio_compra'];
-	        $valor_compra      = $_POST['valor_compra'];
-	        $periodo_pago      = $_POST['periodo_pago'];
-	        $amortizacion_capital   = $_POST['amortizacion_capital'];
-	        $amortizacion_interes   = $_POST['amortizacion_interes'];
-	        $base_capital      = $_POST['base_capital'];
-	        $base_interes      = $_POST['base_interes'];
-	        $periodo_gracia    = $_POST['periodo_gracia'];
-	        $estado_registro   = $_POST['estado_registro'];
-	        
-	        if( !empty(error_get_last()) ){ throw new Exception('Variables no Recibidas'); $mensaje = error_get_last()['message']; }
-	        
-	        $col1  = " 1 existe";
-	        $tab1  = " inver_ingreso_inversiones";
-	        $whe1  = " id_emisores = $id_emisor AND numero_instrumento_ingreso_inversiones = '$numero_instrumento' ";
-	        $id1   = " id_emisores";
-	        $rsEmisor  = $inversiones->getCondiciones($col1, $tab1, $whe1, $id1);
-	        
-	        if( !empty($rsEmisor) ){ throw new Exception('validacion'); $mensaje = "Emisor con numero de instrumento se encuentran registrados"; }
-	        
-	        $parametros = "";
-	        $parametros .= "'".$tipo_identificacion."',";
-	        $parametros .= $id_emisor.",";
-	        $parametros .= "'".$numero_instrumento."',";
-	        $parametros .= $id_tipo_instrumento.",";
-	        $parametros .= "'".$tipo_renta."',";
-	        $parametros .= "'".$fecha_emision."',";
-	        $parametros .= "'".$fecha_compra."',";
-	        $parametros .= "'".$fecha_vencimiento."',";
-	        $parametros .= "'".$tasa_nominal."',";
-	        $parametros .= "'".$plazo_pactado."',";
-	        $parametros .= $valor_nominal.",";
-	        $parametros .= $numero_acciones.",";
-	        $parametros .= $precio_compra.",";
-	        $parametros .= $valor_compra.",";
-	        $parametros .= $periodo_pago.",";
-	        $parametros .= $amortizacion_capital.",";
-	        $parametros .= $amortizacion_interes.",";
-	        $parametros .= $base_capital.",";
-	        $parametros .= $base_interes.",";
-	        $parametros .= "'".$periodo_gracia."',";
-	        $parametros .= "'".$estado_registro."'";
+	        $tasa_cupon        = $_POST['tasa_cupon'];
+	        $fecha_ultimo_cupon= $_POST['fecha_ult_cupon'];
+	        $precio_compra_porcentaje  = $_POST['precio_compra_porcentaje'];
+	        $valor_efectivo     = $_POST['valor_efectivo'];
+	        $rendimiento_porcentaje    = $_POST['rendimiento_porcentaje'];
+	        $precio_anio_renta = $_POST['precio_anio_renta_fija'];
+	        $interes_acumulado_cobrar  = $_POST['interes_acumulado_cobrar'];
+	        $monto_generados_interes   = $_POST['monto_generados_interes'];
+	        $valor_mercado     = $_POST['valor_mercado'];
+	        $numero_acciones_corte  = $_POST['numero_acciones_corte'];
+	        $precio_mercado_actual  = $_POST['precio_mercado_actual'];
+	        $precio_mercado_hace_anio  = $_POST['precio_mercado_hace_anio'];
+	        $dividendo_accion  = $_POST['dividendo_accion']; 
+	        $codigo_vecto_precio   = $_POST['codigo_vecto_precio'];
+	        $id_calificacion_emisor    = $_POST['calificacion_emisor'];
+	        $id_calificacion_riesgos   = $_POST['calificacion_riesgos'];	        
+	        $fecha_ultima_calificacion = $_POST['fecha_ultima_calificacion'];
+	        $provision_constituida     = $_POST['provision_constituida'];
+	        $estado_vencimiento    = $_POST['estado_vencimiento'];
+	        $valor_nominal_vencido = $_POST['valor_nominal_vencido'];
+	        $interes_acumulado_cobrar_vencido     = $_POST['interes_acumulado_cobrar_vencido'];
+	        $numero_cuotas_vencidas= $_POST['numero_cuotas_vencidas'];
+	        $cuenta_contable_cap_vencido = $_POST['cuenta_contable_cap_vencido'];
+	        $valor_dolares     = $_POST['valor_dolares'];
+	        $cuenta_contable_ren_vencido = $_POST['cuenta_contable_ren_vencido'];
+	        $valor_dolares_dos = $_POST['valor_dolares_dos'];
+	        $cuenta_contable_provision_acumulada_capital       = $_POST['cuenta_contable_provision_acumulada_capital'];
+	        $valor_dolares_tres= $_POST['valor_dolares_tres'];
+	        $cuenta_contable_provision_acumulada_rendimiento   = $_POST['cuenta_contable_provision_acumulada_rendimiento'];
+	        $valor_dolares_cuatro   = $_POST['valor_dolares_cuatro'];
+	        $valor_liquidado   = $_POST['valor_liquidado'];
+	        $fecha_liquidacion = $_POST['fecha_liquidacion'];
+	        $precio_liquidacion= $_POST['precio_liquidacion'];
+	        $valor_liquidacion = $_POST['valor_liquidacion'];
+	        $motivo_liquidacion= $_POST['motivo_liquidacion'];
 	        	        
-	        $funcion = "inver_ins_ingreso_inversiones";
+	        if( !empty(error_get_last()) ){ throw new Exception('Variables no Recibidas'); $mensaje = error_get_last()['message']; }
+	        	       
+	        $parametros = "";
+	        $parametros .= "'".$id_ingreso_inversiones."',";
+	        $parametros .= "'".$estado_inversion."',";
+	        $parametros .= "'".$rango_vencimiento."',";
+	        $parametros .= "'".$valor_contable."',";
+	        $parametros .= "'".$tasa_nominal."',";
+	        $parametros .= "'".$tasa_cupon."',";
+	        $parametros .= "'".$fecha_ultimo_cupon."',";
+	        $parametros .= "'".$precio_compra_porcentaje."',";
+	        $parametros .= "'".$valor_efectivo."',";
+	        $parametros .= "'".$rendimiento_porcentaje."',";
+	        $parametros .= $precio_anio_renta.",";
+	        $parametros .= $interes_acumulado_cobrar.",";
+	        $parametros .= $monto_generados_interes.",";
+	        $parametros .= $valor_mercado.",";
+	        $parametros .= $numero_acciones_corte.",";
+	        $parametros .= $precio_mercado_actual.",";
+	        $parametros .= $precio_mercado_hace_anio.",";
+	        $parametros .= $dividendo_accion.",";
+	        $parametros .= "'".$codigo_vecto_precio."',";
+	        $parametros .= $id_calificacion_emisor.",";
+	        $parametros .= $id_calificacion_riesgos.",";
+	        $parametros .= "'".$fecha_ultima_calificacion."',";
+	        $parametros .= "'".$provision_constituida."',";
+	        $parametros .= "'".$estado_vencimiento."',";
+	        $parametros .= "'".$valor_nominal_vencido."',";
+	        $parametros .= "'".$interes_acumulado_cobrar_vencido."',";
+	        $parametros .= "'".$numero_cuotas_vencidas."',";
+	        $parametros .= "'".$cuenta_contable_cap_vencido."',";
+	        $parametros .= "'".$valor_dolares."',";
+	        $parametros .= "'".$cuenta_contable_ren_vencido."',";
+	        $parametros .= "'".$valor_dolares_dos."',";
+	        $parametros .= "'".$cuenta_contable_provision_acumulada_capital."',";
+	        $parametros .= "'".$valor_dolares_tres."',";
+	        $parametros .= "'".$cuenta_contable_provision_acumulada_rendimiento."',";
+	        $parametros .= "'".$valor_dolares_cuatro."',";
+	        $parametros .= "'".$valor_liquidado."',";
+	        $parametros .= "'".$fecha_liquidacion."',";
+	        $parametros .= "'".$precio_liquidacion."',";
+	        $parametros .= "'".$valor_liquidacion."',";
+	        $parametros .= "'".$motivo_liquidacion."'";
+	        	        
 	        
+	        $funcion = "inver_ins_ingreso_saldos_inversiones";
+	        	        
 	        #sql de insert
 	        $sqInversiones    = $inversiones->getconsultaPG($funcion, $parametros);
+	        
+	        //echo $sqInversiones; die();
+	        
 	        $resultado  = $inversiones->llamarconsultaPG($sqInversiones);
 	        
 	        if( !empty(error_get_last()) ){
@@ -423,12 +458,12 @@ class SaldosInversionesController extends ControladorBase{
 	        
 	    } catch (Exception $e) {
 	        $inversiones->endTran();
-	        echo '<message> Error Ingreso Inversiones '.$e->getMessage().' <message>';
+	        echo '<message> Error Saldos Inversiones '.$e->getMessage().' <message>';
 	    }
 	    
 	    	    
 	}
-	/** end dc 2021/02/19 **/
+	/** end dc 2021/02/25 **/
 
 	/*** dc 2021-02-23	 **/
 	public function autompleteNumeroInstrumento(){

@@ -15,39 +15,19 @@ class IngresoInversionesG2Controller extends ControladorBase{
 	        
 	        $temp_comprobantes=new ComprobantesTemporalModel();
 	        
-	        $tipo_comprobante=new TipoComprobantesModel();
-	        //$resultTipCom = $tipo_comprobante->getAll("nombre_tipo_comprobantes");
-	        
-	        $forma_pago=new FormaPagoModel();
-	        $resultFormaPago = $forma_pago->getAll("nombre_forma_pago");
-	        
-	        /** buscar tipo comprobantes **/
-	        $TipoComprobantes = new TipoComprobantesModel();
-	        $columnas1 = " id_tipo_comprobantes,nombre_tipo_comprobantes";
-	        $tablas1 = " tipo_comprobantes";
-	        $where1 = " 1 = 1  AND  nombre_tipo_comprobantes = 'CONTABLE' ";
-	        $id1 = "id_tipo_comprobantes";
-	        $rsConsulta1 = $TipoComprobantes->getCondiciones($columnas1, $tablas1, $where1, $id1);
-	        
 	        $nombre_controladores = "inv_ingreso";
 	        $id_rol= $_SESSION['id_rol'];
 	        $resultPer = $temp_comprobantes->getPermisosVer("   controladores.nombre_controladores = '$nombre_controladores' AND permisos_rol.id_rol = '$id_rol' " );
 	        
-	        
-	        
 	        if (!empty($resultPer))
 	        {
 	            
-	            $this->view_inversiones("IngresoInversiones",array(
-	                "resultTipCom"=>$rsConsulta1 , "resultFormaPago"=>$resultFormaPago, "resultTipoComprobantes"=>$rsConsulta1
-	            ));
-	            
-	            
+	            $this->view_inversiones("IngresoInversiones",array());
+	            	            
 	        }else{
 	            	            
 	            $this->view("Error",array(
-	                "resultado"=>"No tiene Permisos de Generar Comprobantes"
-	                
+	                "resultado"=>"No tiene Permisos de Generar Comprobantes"	                
 	                
 	            ));
 	            exit();

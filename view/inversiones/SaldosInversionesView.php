@@ -118,54 +118,25 @@
          	
          	<div class="row">
          		<div class="col-lg-12 col-md-12 col-xs-12">
-         			<div id="div_pnl_info_ingreso_inversiones">
+         			<div id="div_pnl_info_ingreso_inversiones" class="hide">
             			<h3 class="titulo">Informaci&oacute;n N&uacute;mero Instrumento</h3>
             			<div class="box-footer no-padding">
-                    	<div class="bio-row"><p><span id="lbl_tipo_identificacion" class="tab">Tipo Identificaci&oacute;n: </span>{ANIO_DESCUENTOS}</p></div>
-                    	<div class="bio-row"><p><span id="lbl_identificacion" class="tab">Identificaci&oacute;n: </span>{MES_DESCUENTOS}</p></div>
-                    	<div class="bio-row"><p><span id="lbl_nombre_emisor" class="tab">Nombre Emisor: </span>{MES_DESCUENTOS}</p></div>
-                    	<div class="bio-row"><p><span id="lbl_tipo_instrumento" class="tab">Tipo Instrumento: </span>{ANIO_DESCUENTOS}</p></div>
-                    	<div class="bio-row"><p><span id="lbl_tipo_renta" class="tab">Tipo Renta: </span>{MES_DESCUENTOS}</p></div>	
-                    	<div class="bio-row"><p><span id="lbl_fecha_compra" class="tab">Fecha Compra: </span>{MES_DESCUENTOS}</p></div>	
+                    	<div class="bio-row"><p><span class="tab">Tipo Identificaci&oacute;n: </span><span id="lbl_tipo_identificacion"></span></p></div>
+                    	<div class="bio-row"><p><span class="tab">Identificaci&oacute;n: </span> <span id="lbl_identificacion" ></span></p></div>
+                    	<div class="bio-row"><p><span class="tab">Nombre Emisor: </span> <span id="lbl_nombre_emisor" ></span> </p></div>
+                    	<div class="bio-row"><p><span class="tab">Tipo Instrumento: </span> <span id="lbl_tipo_instrumento" ></span> </p></div>
+                    	<div class="bio-row"><p><span class="tab">Tipo Renta: </span> <span id="lbl_tipo_renta" ></span> </p></div>	
+                    	<div class="bio-row"><p><span class="tab">Fecha Compra: </span> <span id="lbl_fecha_compra" ></span> </p></div>	
                     	</div>
+                    	
         			</div>
+        			<div class="col-lg-12 col-md-12 col-xs-12">
+        				<p></p>
+                    </div>
          		</div>
          		
          	</div>
-         	        
-        	<div class="row">
-        	
-        		<div class="col-xs-12 col-lg-3 col-md-3 ">
-        			<div class="form-group">
-    	              <label for="tipo_identificacion" class="control-label" >Tipo Identificaci&oacute;n:</label>
-    				  <select name="tipo_identificacion" id="tipo_identificacion"  class="form-control" >
-    				  	<option value="0" selected="selected">--Seleccione--</option>                    
-    					<option value="CED" >CED</option>	
-    					<option value="RUC" >RUC</option>	
-    					<option value="PAS" >PAS</option>					
-    				   </select> 
-				   </div>
-             	</div>
-        	
-        		<div class="col-xs-12 col-lg-3 col-md-3 ">
-        			<div class="form-group">
-        			   <label for="identificacion_emisor" class="control-label">Identificaci&oacute;n:</label>
-        			   <input type="text" class="form-control" id="identificacion_emisor" name="identificacion_emisor" >    			   
-    	               <input type="hidden" id="id_emisor" value="0" />
-    	            </div>
-    			</div>
-        	             	
-             	<div class="col-xs-12 col-lg-3 col-md-3 ">
-             		<div class="form-group">
-        			   <label for="tipo_instrumento" class="control-label">Tipo Instrumento:</label>
-        			   <select name="tipo_instrumento" id="tipo_instrumento"  class="form-control" >
-        				  	<option value="0" selected="selected">--Seleccione--</option> 
-    				   </select>
-				    </div>
-             	</div>
-             	
-             </div>
-             
+         	
              <div class="row">
     	         
     	         <div class="col-xs-12 col-lg-3 col-md-3 ">
@@ -180,25 +151,7 @@
         				   </select> 
                      </div>
     		     </div>
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="tipo_renta" class="control-label">Tipo Renta:</label>
-                           <select name="tipo_renta" id="tipo_renta"  class="form-control" >
-        				  	<option value="0" selected="selected">--Seleccione--</option>                    
-        					<option value="RENTAFIJA" >Renta Fija</option>	
-        					<option value="RENTAVARIABLE" >Renta Variable</option>		
-        				   </select> 
-                     </div>
-    		     </div>
-    		     
-    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="fecha_compra" class="control-label">Fecha compra:</label>
-                           <input type="date" class="form-control" id="fecha_compra" name="fecha_compra" value="" >
-                     </div>
-    		     </div>
-    	         
+    	            	         
     	         <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="rango_vencimiento" class="control-label">Rango Vencimiento:</label>
@@ -212,25 +165,25 @@
         				  </select>
                      </div>
     		     </div>
-    		                  	
-        	</div>
-        	
-        	 <div class="row">
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="valor_contable" class="control-label">Valor contable:</label>
-                          <input type="date" class="form-control" id="valor_contable" name="valor_contable" value="" >
+                          <input type="text" class="form-control" id="valor_contable" name="valor_contable" value="" >
                      </div>
     		     </div>
     		     
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
+    		      <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="tasa_nominal" class="control-label">Tasa Nominal:</label>
                           <input type="text" class="form-control" id="tasa_nominal" name="tasa_nominal" value="" >
                      </div>
     		     </div>
-    	         
+    		                  	
+        	</div>
+        	
+        	 <div class="row">
+    	             	         
     	         <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="tasa_cupon" class="control-label">Tasa Cupon:</label>
@@ -244,57 +197,57 @@
                           <input type="date" class="form-control" id="fecha_ult_cupon" name="fecha_ult_cupon" value="" >
                      </div>
     		     </div>
-    		                  	
-        	</div>
-        	
-        	<div class="row">
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="precio_compra_porcentaje" class="control-label">Precio Compra Porcentaje:</label>
+                          <label for="precio_compra_porcentaje" class="control-label">Precio Compra %:</label>
                           <input type="text" class="form-control" id="precio_compra_porcentaje" name="precio_compra_porcentaje" value="" >
-                     </div>
-    		     </div>
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="valor_efectivo" class="control-label">Valor Efectivo Compra:</label>
-                           <input type="text" class="form-control" id="valor_efectivo" name="valor_efectivo" value="" >
                      </div>
     		     </div>
     		     
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="rendimiento_porcentaje" class="control-label">Rendimiento Porcentaje:</label>
+                          <label for="valor_efectivo" class="control-label">Valor Efectivo Compra:</label>
+                           <input type="text" class="form-control" id="valor_efectivo" name="valor_efectivo" value="" >
+                     </div>
+    		     </div>
+    		                  	
+        	</div>
+        	
+        	<div class="row">
+    	             		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
+        		     <div class="form-group">
+                          <label for="rendimiento_porcentaje" class="control-label"> % Rendimiento:</label>
                            <input type="text" class="form-control" id="rendimiento_porcentaje" name="rendimiento_porcentaje" value="" >
                      </div>
     		     </div>
     		     
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="precio_anio_renta" class="control-label">Precio Hace Año:</label>
-                          <input type="text" class="form-control" id="precio_anio_renta" name="precio_anio_renta" value="" >
+                          <label for="precio_anio_renta_fija" class="control-label">Precio Hace Año:</label>
+                          <input type="text" class="form-control" id="precio_anio_renta_fija" name="precio_anio_renta_fija" value="" >
+                     </div>
+    		     </div>
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
+        		     <div class="form-group">
+                          <label for="interes_acumulado_c" class="control-label">Interes Acumulado Cobrar:</label>
+                          <input type="text" class="form-control" id="interes_acumulado_c" name="interes_acumulado_c" value="" >
+                     </div>
+    		     </div>
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
+        		     <div class="form-group">
+                          <label for="monto_generados_interes" class="control-label">Monto interes Generados:</label>
+                          <input type="text" class="form-control" id="monto_generados_interes" name="monto_generados_interes" value="" >
                      </div>
     		     </div>
              	
         	</div>
         	
         	<div class="row">
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="interes_acumulado_c" class="control-label">Interes Acumulado Cobrar:</label>
-                          <input type="text" class="form-control" id="interes_acumulado_c" name="interes_acumulado_c" value="" >
-                     </div>
-    		     </div>
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="monto_generados" class="control-label">Monto Generados:</label>
-                          <input type="text" class="form-control" id="monto_generados" name="monto_generados" value="" >
-                     </div>
-    		     </div>
-    		     
+    	             		     
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="valor_mercado" class="control-label">Valor Mercado:</label>
@@ -304,8 +257,22 @@
     		     
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="numero_acciones_corte" class="control-label">Numero Acciones Corte:</label>
+                          <label for="numero_acciones_corte" class="control-label"># Acciones Fecha Corte:</label>
                           <input type="text" class="form-control" id="numero_acciones_corte" name="numero_acciones_corte" value="" >
+                     </div>
+    		     </div>
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
+        		     <div class="form-group">
+                          <label for="precio_mercado_actual" class="control-label">Precio Mercado Actual:</label>
+                          <input type="text" class="form-control" id="precio_mercado_actual" name="precio_mercado_actual" value="" >
+                     </div>
+    		     </div>
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
+        		     <div class="form-group">
+                          <label for="precio_mercado_hace_anio" class="control-label">Precio Mercado Hace Año:</label>
+                          <input type="text" class="form-control" id="precio_mercado_hace_anio" name="precio_mercado_hace_anio" value="" >
                      </div>
     		     </div>
              	
@@ -313,23 +280,9 @@
         	
         	<div class="row">
     	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="precio_mercado_actual" class="control-label">Precio Mercado Actual:</label>
-                          <input type="text" class="form-control" id="precio_mercado_actual" name="precio_mercado_actual" value="" >
-                     </div>
-    		     </div>
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="precio_mercado_hace_anio" class="control-label">Precio Mercado Hace Año:</label>
-                          <input type="text" class="form-control" id="precio_mercado_hace_anio" name="precio_mercado_hace_anio" value="" >
-                     </div>
-    		     </div>
-    		     
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="dividendo_accion" class="control-label">Dividendo Accion:</label>
+                          <label for="dividendo_accion" class="control-label">Dividendos por Accion:</label>
                           <input type="text" class="form-control" id="dividendo_accion" name="dividendo_accion" value="" >
                      </div>
     		     </div>
@@ -340,27 +293,27 @@
                           <input type="text" class="form-control" id="codigo_vecto_precio" name="codigo_vecto_precio" value="" >
                      </div>
     		     </div>
-             	
-        	</div>
-        	
-        	<div class="row">
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="calificacion_emisor" class="control-label">Calificaci&oacute;n emisor:</label>
                           <select name="calificacion_emisor" id="calificacion_emisor"  class="form-control" >        				  				
         				  </select>
                      </div>
     		     </div>
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="calificadora_riesgo" class="control-label">Calificadora Riesgo:</label>                          
                           <select name="calificadora_riesgo" id="calificadora_riesgo"  class="form-control" >        				  										
         				  </select>
                      </div>
     		     </div>
-    		     
+             	
+        	</div>
+        	
+        	<div class="row">
+    	         
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="fecha_ult_calificacion" class="control-label">Fecha Ult. Calificaci&oacute;n:</label>
@@ -374,29 +327,35 @@
                           <input type="text" class="form-control" id="provision_constituida" name="provision_constituida" value="" >
                      </div>
     		     </div>
-             	
-        	</div>
-        	
-        	<div class="row">
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="estado_vencimiento" class="control-label">Estado Vencimiento:</label>
-                          <input type="text" class="form-control" id="estado_vencimiento" name="estado_vencimiento" value="" >
-                     </div>
-    		     </div>
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="valor_nominal_vencimiento" class="control-label">Valor Nominal Vencimiento:</label>
-                          <input type="text" class="form-control" id="valor_nominal_vencimiento" name="valor_nominal_vencimiento" value="" >
+                          <select name="estado_vencimiento" id="estado_vencimiento"  class="form-control" >
+        				  	<option value="0" selected="selected">--Seleccione--</option>                    
+        					<option value="PARCIALVENCIDO" >PARCIAL VENCIDO</option>	
+        					<option value="PARCIALLIQUIDADO" >PARCIAL LIQUIDADO</option>	
+        					<option value="TOTALVENCIDO" >TOTAL VENCIDO</option>	
+        					<option value="TOTALLIQUIDADO" >TOTAL LIQUIDADO</option>	
+        				  </select>
                      </div>
     		     </div>
     		     
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="interes_acumulado_c" class="control-label">Inter&eacute;s Acumulado Cobrar:</label>
-                          <input type="date" class="form-control" id="interes_acumulado_c" name="interes_acumulado_c" value="" >
+                          <label for="valor_nominal_vencido" class="control-label">Valor Nominal Vencido:</label>
+                          <input type="text" class="form-control" id="valor_nominal_vencido" name="valor_nominal_vencido" value="" >
+                     </div>
+    		     </div>
+             	
+        	</div>
+        	
+        	<div class="row">
+    	         
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
+        		     <div class="form-group">
+                          <label for="interes_acumulado_cobrar_vencido" class="control-label">Inter&eacute;s Acumulado Cobrar Vencido:</label>
+                          <input type="text" class="form-control" id="interes_acumulado_cobrar_vencido" name="interes_acumulado_cobrar_vencido" value="" >
                      </div>
     		     </div>
     		     
@@ -406,12 +365,8 @@
                           <input type="text" class="form-control" id="numero_cuotas_vencidas" name="numero_cuotas_vencidas" value="" >
                      </div>
     		     </div>
-             	
-        	</div>
-        	
-        	<div class="row">
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
+    		     
+    		      <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_cap_vencido" class="control-label">Cuenta Contable Cap:</label>
                           <input type="text" class="form-control" id="cuenta_contable_cap_vencido" name="cuenta_contable_cap_vencido" value="" >
@@ -424,7 +379,11 @@
                           <input type="text" class="form-control" id="valor_dolares" name="valor_dolares" value="" >
                      </div>
     		     </div>
-    		     
+             	
+        	</div>
+        	
+        	<div class="row">
+    	         
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_ren_vencido" class="control-label">Cuenta Contable Rend:</label>
@@ -439,11 +398,7 @@
                      </div>
     		     </div>
              	
-        	</div>
-        	
-        	<div class="row">
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
+             	<div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_provision_acumulada_capital" class="control-label">Cuenta Contable Prov Acum. Cap:</label>
                           <input type="text" class="form-control" id="cuenta_contable_provision_acumulada_capital" name="cuenta_contable_provision_acumulada_capital" value="" >
@@ -457,6 +412,10 @@
                      </div>
     		     </div>
     		     
+        	</div>
+        	
+        	<div class="row">
+    	         
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_provision_acumulada_rendimiento" class="control-label">Cuenta Contable Prov Acum Rend:</label>
@@ -470,57 +429,54 @@
                           <input type="text" class="form-control" id="valor_dolares_cuatro" name="valor_dolares_cuatro" value="" >
                      </div>
     		     </div>
-             	
-        	</div>
-        	
-        	<div class="row">
-    	         
-    	         <div class="col-xs-12 col-lg-3 col-md-3 ">
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="valor_liquido_vencido" class="control-label">Valor L&iacute;quido Vencido:</label>
-                          <input type="text" class="form-control" id="valor_liquido_vencido" name="valor_liquido_vencido" value="" >
+                          <label for="valor_liquidado" class="control-label">Valor L&iacute;quidado :</label>
+                          <input type="text" class="form-control" id="valor_liquidado" name="valor_liquidado" value="" >
                      </div>
     		     </div>
     	         
     	         <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
-                          <label for="fecha_liquida_venta" class="control-label">Fecha L&iacute;quida venta:</label>
-                          <input type="date" class="form-control" id="fecha_liquida_venta" name="fecha_liquida_venta" value="" >
-                     </div>
-    		     </div>
-    		     
-    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="precio_liquido_venta" class="control-label">Precio L&iacute;quido venta:</label>
-                          <input type="date" class="form-control" id="precio_liquido_venta" name="precio_liquido_venta" value="" >
-                     </div>
-    		     </div>
-    		     
-    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="valor_liquido_venta" class="control-label">Valor L&iacute;quido venta:</label>
-                          <input type="text" class="form-control" id="valor_liquido_venta" name="valor_liquido_venta" value="" >
+                          <label for="fecha_liquidacion" class="control-label">Fecha L&iacute;quidaci&oacute;n:</label>
+                          <input type="date" class="form-control" id="fecha_liquidacion" name="fecha_liquidacion" value="" >
                      </div>
     		     </div>
              	
-        	</div>        	
-        	        	
-        	<div class="row">
-        		<div class="col-xs-12 col-lg-3 col-md-3 ">
-        		     <div class="form-group">
-                          <label for="motivo_liquido" class="control-label">Motivo L&iacute;quido:</label>
-                          <input type="text" class="form-control" id="motivo_liquido" name="motivo_liquido" value="" >
-                     </div>
-    		     </div>             	
         	</div>
         	
+        	<div class="row">
+    	         
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
+        		     <div class="form-group">
+                          <label for="precio_liquidacion" class="control-label">Precio Liquidaci&oacute;n:</label>
+                          <input type="text" class="form-control" id="precio_liquidacion" name="precio_liquidacion" value="" >
+                     </div>
+    		     </div>
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
+        		     <div class="form-group">
+                          <label for="valor_liquidacion" class="control-label">Valor Liquidaci&oacute;n:</label>
+                          <input type="text" class="form-control" id="valor_liquidacion" name="valor_liquidacion" value="" >
+                     </div>
+    		     </div>
+    		     
+    		     <div class="col-xs-12 col-lg-3 col-md-3 ">
+        		     <div class="form-group">
+                          <label for="motivo_liquidacion" class="control-label">Motivo L&iacute;quido:</label>
+                          <input type="text" class="form-control" id="motivo_liquidacion" name="motivo_liquidacion" value="" >
+                     </div>
+    		     </div> 
+             	
+        	</div>	
         	
         	<div class="row">
         	        	
         		<div class=" col-xs-12 col-md-12 col-lg-12 ">
         			<div class="pull-right">
         				
-        				<button type="button" id="btn_ingresa_inversiones" value="valor"  class="btn btn-success" onclick="fn_insertar_inversiones()">
+        				<button type="button" id="btn_ingresa_saldos" value="valor"  class="btn btn-success" onclick="fn_insertar_saldos_inversiones()">
         				<i class="fa fa-sign-in text-success" aria-hidden="true"></i> Ingresar Saldos Inversiones
         				</button>
     					        			
@@ -531,10 +487,7 @@
 				        	
         	</div>
         	
-        	
-        	
-        	
-        
+        	        
         </div>
       </div>
      </section>
@@ -621,7 +574,7 @@
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>    
-    <script src="view/inversiones/js/saldos_inversiones.js?0.11"></script> 
+    <script src="view/inversiones/js/saldos_inversiones.js?0.12"></script> 
     
     
    

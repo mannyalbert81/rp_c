@@ -8,12 +8,13 @@ $(document).ready(function(){
 
 var view = view || {};
 
-view.id_emisor	= $("#id_emisor");
-view.id_ingreso_inversiones	= $("#id_ingreso_inversiones");
+view.numero_instrumento	= $("#numero_instrumento");
+view.id_ingreso_inversiones	= $("#id_ingreso_inversiones");//
 view.tipo_identificacion	= $("#tipo_identificacion");
 view.identificacion_emisor	= $("#identificacion_emisor");
-view.numero_instrumento	= $("#numero_instrumento");
+view.id_emisor	= $("#id_emisor");
 view.tipo_instrumento	= $("#tipo_instrumento");
+view.valor_contable 	= $("#valor_contable");
 view.calificacion_emisor	= $("#calificacion_emisor"); 
 view.calificacion_riesgos	= $("#calificadora_riesgo");
 view.fecha_emision	= $("#fecha_emision");
@@ -128,8 +129,22 @@ var cargarDetallesNumeroInstrumento	= function(a){
 		type:'POST',
 		data:{'id_ingresos_inversiones':id_ingreso_inversiones}
 		}).done(function(x){
-			let data	= x[0];
-			//$("#lbl_tipo_identificacion").
+			
+			let data	= x.data[0];
+			
+			$("#div_pnl_info_ingreso_inversiones").removeClass('hide');
+			
+			$("#lbl_tipo_identificacion").text( data.tipo_identificacion_ingreso_inversiones );
+			$("#lbl_identificacion").text( data.ruc_emisores );
+			$("#lbl_nombre_emisor").text( data.nombre_emisores );
+			$("#lbl_tipo_instrumento").text( data.tipo_identificacion_ingreso_inversiones );
+			$("#lbl_tipo_renta").text( data.tipo_renta_ingreso_inversiones );
+			$("#lbl_fecha_compra").text( data.fecha_compra_ingreso_inversiones );
+			
+			/** para colocar valor de compra **/
+			
+			
+			
 			console.log(x)
 		}).fail(function(xhr, status, error){
 			console.log(xhr.responseText)
@@ -184,10 +199,11 @@ view.numero_instrumento.on("focus",function(e) {
      		   
      		   if(ui.item == null){
      			   
-     			  view.numero_instrumento.notify("Digite Numero Instrumento correcta",{ position:"top center"});
+     			  view.numero_instrumento.notify("Numero Instrumento no correcto",{ position:"top center"});
      			  
      			  view.id_ingreso_inversiones.val('0');
-     			  view.numero_instrumento.val('');     			     			 
+     			  view.numero_instrumento.val(''); 
+     			  $("#div_pnl_info_ingreso_inversiones").addClass('hide');
      		   }
      	   }
     	

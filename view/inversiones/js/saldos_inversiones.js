@@ -1,6 +1,6 @@
 $(document).ready(function(){ 	 
 	   
-	load_inversiones();
+	load_saldos_inversiones();
 	cargaCalificacionEmisor();
 	cargaCalificacionRiesgos();
 	//cargaTipoInstrumento();
@@ -236,7 +236,7 @@ view.numero_instrumento.on("focus",function(e) {
  * @param e
  * @returns
  */
-/*view.identificacion_emisor.on("focus",function(e) {
+$(".plan_cuentas_ac").on("focus",function(e) {
 	
 	let _elemento = $(this);
 	
@@ -246,7 +246,7 @@ view.numero_instrumento.on("focus",function(e) {
     		minLength: 2,    	    
     		source:function (request, response) {
     			$.ajax({
-    				url:"index.php?controller=SaldosInversiones&action=autompleteEmisores",
+    				url:"index.php?controller=SaldosInversiones&action=autompletePlanCuentas",
     				dataType:"json",
     				type:"GET",
     				data:{term:request.term},
@@ -262,13 +262,14 @@ view.numero_instrumento.on("focus",function(e) {
     		select: function (event, ui) {
      	       	    			
     			if(ui.item.id == ''){
-    				view.id_emisor.val('');
-        			view.identificacion_emisor.val('');
+    				//view.id_emisor.val('');
+        			//view.identificacion_emisor.val('');
     				return;
     			}
     			
-    			view.id_emisor.val(ui.item.id);
-    			view.identificacion_emisor.val(ui.item.value);
+    			$(this).val(ui.item.value);
+    			//view.id_emisor.val(ui.item.id);
+    			//view.identificacion_emisor.val();
     			    			     	     
      	    },
      	   //appendTo: "#mod_distribucion",
@@ -276,10 +277,11 @@ view.numero_instrumento.on("focus",function(e) {
      		   
      		   if(ui.item == null){
      			   
+     			  $(this).val('');
      			  view.identificacion.notify("Digite Identificación correcta",{ position:"top center"});
      			  
-     			  view.id_emisor.val('');
-     			  view.identificacion_emisor.val('');     			     			 
+     			  //view.id_emisor.val('');
+     			  //view.identificacion_emisor.val('');     			     			 
      		   }
      	   }
     	
@@ -289,13 +291,13 @@ view.numero_instrumento.on("focus",function(e) {
     }
     
 })
-*/
+
 
 var viewTabla = viewTabla || {};
 
 viewTabla.tabla  = null;
-viewTabla.nombre = 'tblinversiones';
-viewTabla.contenedor = $("#div_inversiones");
+viewTabla.nombre = 'tblsaldos_inversiones';
+viewTabla.contenedor = $("#div_saldos_inversiones");
 viewTabla.params	= function(){ 
 	var extenddatapost = { };
 	return extenddatapost;
@@ -332,7 +334,7 @@ var idioma_espanol = {
 }
 
 
-var load_inversiones	= function(){
+var load_saldos_inversiones	= function(){
 	
 	viewTabla.tabla	=  $( '#'+viewTabla.nombre ).DataTable({
 	    'processing': true,
@@ -341,7 +343,7 @@ var load_inversiones	= function(){
 	    'destroy' : true,
 	    'fixedHeader': true,
 	    'ajax': {
-	        'url':'index.php?controller=SaldosInversiones&action=dtMostrarInversiones',
+	        'url':'index.php?controller=SaldosInversiones&action=dtMostrarSaldosInversiones',
 	        'data': function ( d ) {
 	            return $.extend( {}, d, viewTabla.params() );
 	            },
@@ -358,23 +360,47 @@ var load_inversiones	= function(){
     		{ data: 'nombre_emisor'},
     		{ data: 'numero_instrumento' },
     		{ data: 'tipo_instrumento' },
-    		{ data: 'tipo_renta'},
-    		{ data: 'fecha_emision', orderable: false },
+    		{ data: 'estado_inversion'},
+    		{ data: 'tipo_renta'},    		
     		{ data: 'fecha_compra', orderable: false },
-    		{ data: 'fecha_vencimiento', orderable: false },
-    		{ data: 'tasa_nominal'},
-    		{ data: 'plazo_pactado' },
-    		{ data: 'valor_nominal'},
-    		{ data: 'numero_acciones' },
+    		{ data: 'rango_vencimiento', orderable: false },
+    		{ data: 'valor_contable'},
+    		{ data: 'tasa_nominal' },
+    		{ data: 'tasa_cupon'},
+    		{ data: 'fecha_ultimo_cupon' },
     		{ data: 'precio_compra' },
-    		{ data: 'valor_compra'},
-    		{ data: 'periodo_pago', orderable: false },
-    		{ data: 'amortizacion_capital', orderable: false },
-    		{ data: 'amortizacion_interes', orderable: false },
-    		{ data: 'base_tasa_capital', orderable: false },
-    		{ data: 'base_tasa_interes', orderable: false },
-    		{ data: 'periodo_gracia', orderable: false },
-    		{ data: 'estado_registro', orderable: false },
+    		{ data: 'valor_efectivo'},
+    		{ data: 'rendimiento_porcentaje', orderable: false },
+    		{ data: 'precio_hace_anio', orderable: false },
+    		{ data: 'interes_acumulado', orderable: false },
+    		{ data: 'monto_interes_ganados', orderable: false },
+    		{ data: 'valor_mercado', orderable: false },
+    		{ data: 'numero_acciones_corte', orderable: false },
+    		{ data: 'precio_actual_mercado', orderable: false },    		
+    		{ data: 'precio_hace_anio_mercado', orderable: false },
+    		{ data: 'dividendo_acciones', orderable: false },
+    		{ data: 'codigo_vecto_precio', orderable: false },
+    		{ data: 'calificacion_emisor', orderable: false },
+    		{ data: 'calificacion_riesgos', orderable: false },
+    		{ data: 'fecha_ultima_calificacion', orderable: false },
+    		{ data: 'provision_constituida', orderable: false },
+    		{ data: 'estado_vencimiento', orderable: false },
+    		{ data: 'valor_nominal', orderable: false },
+    		{ data: 'interes_acumulado_cobrar_vencido', orderable: false },
+    		{ data: 'numero_cuotas_vencido', orderable: false },
+    		{ data: 'cc_capital_vencido', orderable: false },
+    		{ data: 'valor_dolares', orderable: false },
+    		{ data: 'cc_rendimiento_vencido', orderable: false },    		
+    		{ data: 'valor_dolares_dos', orderable: false },
+    		{ data: 'cc_provision_acum_capital', orderable: false },
+    		{ data: 'valor_dolares_tres', orderable: false },
+    		{ data: 'cc_provision_acum_rendimiento', orderable: false },
+    		{ data: 'valor_dolares_cuatro', orderable: false },
+    		{ data: 'valor_liquidado', orderable: false },
+    		{ data: 'fecha_liquidacion', orderable: false },
+    		{ data: 'precio_liquidacion', orderable: false },
+    		{ data: 'valor_liquidacion', orderable: false },
+    		{ data: 'motivo_liquidacion', orderable: false },    		
     		{ data: 'opciones', orderable: false }
     		
 	    ],
@@ -382,12 +408,10 @@ var load_inversiones	= function(){
 	        {className: "dt-center", targets:[0] },
 	        {sortable: false, targets: [ 0,2,6,7,8] }
 	      ],
-		'scrollY': "80vh",
-        'scrollCollapse':true,
-        'fixedHeader': {
-            header: true,
-            footer: true
-        },
+	    sScrollY: "600",
+	    sScrollX: " 100% ",
+	    sScrollXInner:" 200% ",
+	    bScrollCollapse: true,
         dom: "<'row'<'col-sm-6'<'box-tools pull-right'B>>><'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
         buttons: [
         	{ "extend": 'excelHtml5',  "titleAttr": 'Excel', "text":'<span class="fa fa-file-excel-o fa-2x fa-fw"></span>',"className": 'no-padding btn btn-default btn-sm' }

@@ -369,7 +369,7 @@
     		      <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_cap_vencido" class="control-label">Cuenta Contable Cap:</label>
-                          <input type="text" class="form-control" id="cuenta_contable_cap_vencido" name="cuenta_contable_cap_vencido" value="" >
+                          <input type="text" class="form-control plan_cuentas_ac" id="cuenta_contable_cap_vencido" name="cuenta_contable_cap_vencido" value="" >
                      </div>
     		     </div>
     	         
@@ -387,7 +387,7 @@
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_ren_vencido" class="control-label">Cuenta Contable Rend:</label>
-                          <input type="text" class="form-control" id="cuenta_contable_ren_vencido" name="cuenta_contable_ren_vencido" value="" >
+                          <input type="text" class="form-control plan_cuentas_ac" id="cuenta_contable_ren_vencido" name="cuenta_contable_ren_vencido" value="" >
                      </div>
     		     </div>
     		     
@@ -401,7 +401,7 @@
              	<div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_provision_acumulada_capital" class="control-label">Cuenta Contable Prov Acum. Cap:</label>
-                          <input type="text" class="form-control" id="cuenta_contable_provision_acumulada_capital" name="cuenta_contable_provision_acumulada_capital" value="" >
+                          <input type="text" class="form-control plan_cuentas_ac" id="cuenta_contable_provision_acumulada_capital" name="cuenta_contable_provision_acumulada_capital" value="" >
                      </div>
     		     </div>
     	         
@@ -419,7 +419,7 @@
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="cuenta_contable_provision_acumulada_rendimiento" class="control-label">Cuenta Contable Prov Acum Rend:</label>
-                          <input type="text" class="form-control" id="cuenta_contable_provision_acumulada_rendimiento" name="cuenta_contable_provision_acumulada_rendimiento" value="" >
+                          <input type="text" class="form-control plan_cuentas_ac" id="cuenta_contable_provision_acumulada_rendimiento" name="cuenta_contable_provision_acumulada_rendimiento" value="" >
                      </div>
     		     </div>
     		     
@@ -465,10 +465,18 @@
     		     <div class="col-xs-12 col-lg-3 col-md-3 ">
         		     <div class="form-group">
                           <label for="motivo_liquidacion" class="control-label">Motivo L&iacute;quido:</label>
-                          <input type="text" class="form-control" id="motivo_liquidacion" name="motivo_liquidacion" value="" >
+                          <select name="motivo_liquidacion" id="motivo_liquidacion"  class="form-control" >
+        				  	<option value="0" selected="selected">--Seleccione--</option>                    
+        					<option value="PLAZOCUMPLIDO" >PLAZO CUMPLIDO</option>	
+        					<option value="VENTASDEACCIONES" >VENTAS DE ACCIONES</option>	
+        					<option value="CESION" >CESIÓN</option>	
+        					<option value="ENDOSO" >ENDOSO</option>	
+        					<option value="PRECANCELACION" >PRECANCELACION</option>	
+        					<option value="OTROSMOTIVO" >OTROS</option>	
+        				  </select>
                      </div>
     		     </div> 
-             	
+             	             	
         	</div>	
         	
         	<div class="row">
@@ -506,10 +514,10 @@
         
         	<div class="row">
      			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            		<div id="div_inversiones" class="letrasize11">
+            		<div id="div_saldos_inversiones" class="letrasize11">
                     <!--                 		display compact -->
                     <!--  table tablesorter table-striped table-bordered nowrap -->
-                		<table id="tblinversiones" class="table table-bordered display compact">
+                		<table id="tblsaldos_inversiones" class="table table-bordered display compact">
                 			<thead>
                 				<tr class="info">
                 					<th>#</th>
@@ -518,28 +526,52 @@
                     				<th>Nombre Emisor</th>
                     				<th>N&uacute;mero Instrumento</th>
                     				<th>Tipo Instrumento</th>
-                    				<th>Tipo Renta</th>
-                    				<th>Fecha Emision</th>
+                    				<th>Estado Inversi&oacute;n</th>
+                    				<th>Tipo Renta</th>                    				
                     				<th>Fecha Compra</th>
-                    				<th>Fecha Vencimiento</th> 
-                    				<th>Tasa Nominal</th>
-                    				<th>Plazo Pactado</th>
-                    				<th>Valor Nominal</th>
-                    				<th>Numero Acciones</th>
-                    				<th>Precio Compra</th>
-                    				<th>Valor Compra</th>
-                    				<th>Periodo Pago</th>
-                    				<th>Amortizaci&oacute;n Capital</th>
-                    				<th>Amortizaci&oacute;n Inter&eacute;s</th>
-                    				<th>Base Tasa Capital</th>
-                    				<th>Base Tasa Inter&eacute;s</th>
-                    				<th>Periodo Gracia</th>
-                    				<th>Estado Registro</th> 
+                    				<th>Rango Vencimiento</th> 
+                    				<th>Valor Contable</th>                    				
+									<th>Tasa Nominal</th>
+									<th>Tasa Cupon</th>
+									<th>Fecha Ult. Cupon</th>
+									<th>Precio Compra</th>
+									<th>Valor Efectivo</th>
+									<th>% Rendimiento</th>
+									<th>Precio Hace Año</th>
+									<th>Interes Acumulado</th>
+									<th>Monto Interes Ganados</th>
+									<th>Valor Mercado</th>
+									<th># Acciones Corte</th>
+									<th>Precio Actual Mercado</th>
+									<th>Precio Hace Año Mercado</th>
+									<th>Dividendo Acciones</th>
+									<th>Codigo Vecto Precio</th>
+									<th>Calificacion Emisor</th>
+									<th>Calificacion Riesgos</th>
+									<th>Fecha Ult. Calificacion</th>
+									<th>Provision Constituida</th>
+									<th>Estado Vencimiento</th>
+									<th>Valor Nominal</th>
+									<th>Interes Acum. Cobrar Vencido</th>
+									<th>Numero Cuotas Vencido</th>
+									<th>Cta. Contable Cap. Vencido</th>
+									<th>Valor USD</th>
+									<th>Cta. Contable Rend. Vencido</th>
+									<th>Valor USD</th>
+									<th>Cta. Contable Prov. Cap. Vencido<</th>
+									<th>Valor USD</th>
+									<th>Cta. Contable Prov. Rend. Vencido</th>
+									<th>Valor USD</th>
+									<th>Valor Liquidado</th>
+									<th>Fecha Liquidacion</th>
+									<th>Precio Liquidacion</th>
+									<th>Valor Liquidacion</th>
+									<th>Motivo Liquidacion</th>
                     				<th>Opciones</th> 
                 				</tr>                    				
                 			</thead>  
                 			<tbody>
-                				
+                			                				
                 			</tbody>                  			
                 			<tfoot>
                 				
@@ -574,7 +606,7 @@
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="view/bootstrap/otros/notificaciones/notify.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>    
-    <script src="view/inversiones/js/saldos_inversiones.js?0.17"></script> 
+    <script src="view/inversiones/js/saldos_inversiones.js?0.19"></script> 
     
     
    

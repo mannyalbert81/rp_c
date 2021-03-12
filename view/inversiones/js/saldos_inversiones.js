@@ -1,39 +1,54 @@
 $(document).ready(function(){ 	 
 	   
-	load_inversiones();
+	load_saldos_inversiones();
 	cargaCalificacionEmisor();
 	cargaCalificacionRiesgos();
-	cargaTipoInstrumento();
+	//cargaTipoInstrumento();
 });
 
 var view = view || {};
 
 view.numero_instrumento	= $("#numero_instrumento");
-view.id_ingreso_inversiones	= $("#id_ingreso_inversiones");//
-view.tipo_identificacion	= $("#tipo_identificacion");
-view.identificacion_emisor	= $("#identificacion_emisor");
-view.id_emisor	= $("#id_emisor");
-view.tipo_instrumento	= $("#tipo_instrumento");
-view.valor_contable 	= $("#valor_contable");
-view.calificacion_emisor	= $("#calificacion_emisor"); 
-view.calificacion_riesgos	= $("#calificadora_riesgo");
-view.fecha_emision	= $("#fecha_emision");
-view.fecha_compra	= $("#fecha_compra");
-view.fecha_vencimiento	= $("#fecha_vencimiento");
+view.id_ingreso_inversiones	= $("#id_ingreso_inversiones");
+view.estado_inversion	= $("#estado_inversion");
+view.rango_vencimiento	= $("#rango_vencimiento");
+view.valor_contable		= $("#valor_contable");
 view.tasa_nominal 	= $("#tasa_nominal");
-view.plazo_pactado 	= $("#plazo_pactado");
-view.valor_nominal 	= $("#valor_nominal");
-view.numero_acciones 	= $("#numero_acciones");
-view.precio_compra 	= $("#precio_compra");
-view.valor_compra 	= $("#valor_compra");
-view.periodo_pago 	= $("#periodo_pago");
-view.amortizacion_capital	= $("#amortizacion_capital");
-view.amortizacion_interes 	= $("#amortizacion_interes");
-view.base_tasa_capital 	= $("#base_tasa_capital");
-view.base_tasa_interes 	= $("#base_tasa_interes");
-view.periodo_gracia 	= $("#periodo_gracia");
-view.estado_registro 	= $("#estado_registro");
-
+view.tasa_cupon	= $("#tasa_cupon"); 
+view.fecha_ult_cupon	= $("#fecha_ult_cupon"); 
+view.precio_compra_porcentaje	= $("#precio_compra_porcentaje"); 
+view.valor_efectivo 		= $("#valor_efectivo");
+view.rendimiento_porcentaje = $("#rendimiento_porcentaje");
+view.precio_anio_renta_fija = $("#precio_anio_renta_fija");
+view.interes_acumulado_cobrar	= $("#interes_acumulado_c");
+view.monto_generados_interes 	= $("#monto_generados_interes");
+view.valor_mercado 	= $("#valor_mercado");
+view.numero_acciones_corte 		= $("#numero_acciones_corte");
+view.precio_mercado_actual 	= $("#precio_mercado_actual");
+view.precio_mercado_hace_anio 	= $("#precio_mercado_hace_anio");
+view.dividendo_accion 	= $("#dividendo_accion");
+view.codigo_vecto_precio 	= $("#codigo_vecto_precio");
+view.calificacion_emisor 		= $("#calificacion_emisor");
+view.calificacion_riesgos		= $("#calificadora_riesgo");
+view.fecha_ultima_calificacion 	= $("#fecha_ult_calificacion");
+view.provision_constituida 	= $("#provision_constituida");
+view.estado_vencimiento		= $("#estado_vencimiento");
+view.valor_nominal_vencido 	= $("#valor_nominal_vencido");
+view.interes_acumulado_cobrar_vencido 	= $("#interes_acumulado_cobrar_vencido");
+view.numero_cuotas_vencidas 	= $("#numero_cuotas_vencidas");
+view.cuenta_contable_cap_vencido 	= $("#cuenta_contable_cap_vencido");
+view.valor_dolares 	= $("#valor_dolares");
+view.cuenta_contable_ren_vencido 	= $("#cuenta_contable_ren_vencido");
+view.valor_dolares_dos 	= $("#valor_dolares_dos");
+view.cuenta_contable_provision_acumulada_capital 	= $("#cuenta_contable_provision_acumulada_capital");
+view.valor_dolares_tres 	= $("#valor_dolares_tres");
+view.cuenta_contable_provision_acumulada_rendimiento 	= $("#cuenta_contable_provision_acumulada_rendimiento");
+view.valor_dolares_cuatro 	= $("#valor_dolares_cuatro");
+view.valor_liquidado 	= $("#valor_liquidado");
+view.fecha_liquidacion 	= $("#fecha_liquidacion");
+view.precio_liquidacion	= $("#precio_liquidacion");
+view.valor_liquidacion 	= $("#valor_liquidacion");
+view.motivo_liquidacion = $("#motivo_liquidacion");
 
 
 var cargaCalificacionEmisor	= function (){
@@ -141,9 +156,10 @@ var cargarDetallesNumeroInstrumento	= function(a){
 			$("#lbl_tipo_renta").text( data.tipo_renta_ingreso_inversiones );
 			$("#lbl_fecha_compra").text( data.fecha_compra_ingreso_inversiones );
 			
-			/** para colocar valor de compra **/
-			
-			
+			/** para colocar valor de compra **/ 
+			view.valor_contable.val( data.valor_compra_ingreso_inversiones);
+			view.valor_efectivo.val( data.valor_compra_ingreso_inversiones );
+			view.valor_mercado.val(data.valor_compra_ingreso_inversiones );
 			
 			console.log(x)
 		}).fail(function(xhr, status, error){
@@ -220,7 +236,7 @@ view.numero_instrumento.on("focus",function(e) {
  * @param e
  * @returns
  */
-view.identificacion_emisor.on("focus",function(e) {
+$(".plan_cuentas_ac").on("focus",function(e) {
 	
 	let _elemento = $(this);
 	
@@ -230,7 +246,7 @@ view.identificacion_emisor.on("focus",function(e) {
     		minLength: 2,    	    
     		source:function (request, response) {
     			$.ajax({
-    				url:"index.php?controller=SaldosInversiones&action=autompleteEmisores",
+    				url:"index.php?controller=SaldosInversiones&action=autompletePlanCuentas",
     				dataType:"json",
     				type:"GET",
     				data:{term:request.term},
@@ -246,13 +262,14 @@ view.identificacion_emisor.on("focus",function(e) {
     		select: function (event, ui) {
      	       	    			
     			if(ui.item.id == ''){
-    				view.id_emisor.val('');
-        			view.identificacion_emisor.val('');
+    				//view.id_emisor.val('');
+        			//view.identificacion_emisor.val('');
     				return;
     			}
     			
-    			view.id_emisor.val(ui.item.id);
-    			view.identificacion_emisor.val(ui.item.value);
+    			$(this).val(ui.item.value);
+    			//view.id_emisor.val(ui.item.id);
+    			//view.identificacion_emisor.val();
     			    			     	     
      	    },
      	   //appendTo: "#mod_distribucion",
@@ -260,10 +277,11 @@ view.identificacion_emisor.on("focus",function(e) {
      		   
      		   if(ui.item == null){
      			   
+     			  $(this).val('');
      			  view.identificacion.notify("Digite Identificación correcta",{ position:"top center"});
      			  
-     			  view.id_emisor.val('');
-     			  view.identificacion_emisor.val('');     			     			 
+     			  //view.id_emisor.val('');
+     			  //view.identificacion_emisor.val('');     			     			 
      		   }
      	   }
     	
@@ -278,8 +296,8 @@ view.identificacion_emisor.on("focus",function(e) {
 var viewTabla = viewTabla || {};
 
 viewTabla.tabla  = null;
-viewTabla.nombre = 'tblinversiones';
-viewTabla.contenedor = $("#div_inversiones");
+viewTabla.nombre = 'tblsaldos_inversiones';
+viewTabla.contenedor = $("#div_saldos_inversiones");
 viewTabla.params	= function(){ 
 	var extenddatapost = { };
 	return extenddatapost;
@@ -316,7 +334,7 @@ var idioma_espanol = {
 }
 
 
-var load_inversiones	= function(){
+var load_saldos_inversiones	= function(){
 	
 	viewTabla.tabla	=  $( '#'+viewTabla.nombre ).DataTable({
 	    'processing': true,
@@ -325,7 +343,7 @@ var load_inversiones	= function(){
 	    'destroy' : true,
 	    'fixedHeader': true,
 	    'ajax': {
-	        'url':'index.php?controller=SaldosInversiones&action=dtMostrarInversiones',
+	        'url':'index.php?controller=SaldosInversiones&action=dtMostrarSaldosInversiones',
 	        'data': function ( d ) {
 	            return $.extend( {}, d, viewTabla.params() );
 	            },
@@ -342,23 +360,47 @@ var load_inversiones	= function(){
     		{ data: 'nombre_emisor'},
     		{ data: 'numero_instrumento' },
     		{ data: 'tipo_instrumento' },
-    		{ data: 'tipo_renta'},
-    		{ data: 'fecha_emision', orderable: false },
+    		{ data: 'estado_inversion'},
+    		{ data: 'tipo_renta'},    		
     		{ data: 'fecha_compra', orderable: false },
-    		{ data: 'fecha_vencimiento', orderable: false },
-    		{ data: 'tasa_nominal'},
-    		{ data: 'plazo_pactado' },
-    		{ data: 'valor_nominal'},
-    		{ data: 'numero_acciones' },
+    		{ data: 'rango_vencimiento', orderable: false },
+    		{ data: 'valor_contable'},
+    		{ data: 'tasa_nominal' },
+    		{ data: 'tasa_cupon'},
+    		{ data: 'fecha_ultimo_cupon' },
     		{ data: 'precio_compra' },
-    		{ data: 'valor_compra'},
-    		{ data: 'periodo_pago', orderable: false },
-    		{ data: 'amortizacion_capital', orderable: false },
-    		{ data: 'amortizacion_interes', orderable: false },
-    		{ data: 'base_tasa_capital', orderable: false },
-    		{ data: 'base_tasa_interes', orderable: false },
-    		{ data: 'periodo_gracia', orderable: false },
-    		{ data: 'estado_registro', orderable: false },
+    		{ data: 'valor_efectivo'},
+    		{ data: 'rendimiento_porcentaje', orderable: false },
+    		{ data: 'precio_hace_anio', orderable: false },
+    		{ data: 'interes_acumulado', orderable: false },
+    		{ data: 'monto_interes_ganados', orderable: false },
+    		{ data: 'valor_mercado', orderable: false },
+    		{ data: 'numero_acciones_corte', orderable: false },
+    		{ data: 'precio_actual_mercado', orderable: false },    		
+    		{ data: 'precio_hace_anio_mercado', orderable: false },
+    		{ data: 'dividendo_acciones', orderable: false },
+    		{ data: 'codigo_vecto_precio', orderable: false },
+    		{ data: 'calificacion_emisor', orderable: false },
+    		{ data: 'calificacion_riesgos', orderable: false },
+    		{ data: 'fecha_ultima_calificacion', orderable: false },
+    		{ data: 'provision_constituida', orderable: false },
+    		{ data: 'estado_vencimiento', orderable: false },
+    		{ data: 'valor_nominal', orderable: false },
+    		{ data: 'interes_acumulado_cobrar_vencido', orderable: false },
+    		{ data: 'numero_cuotas_vencido', orderable: false },
+    		{ data: 'cc_capital_vencido', orderable: false },
+    		{ data: 'valor_dolares', orderable: false },
+    		{ data: 'cc_rendimiento_vencido', orderable: false },    		
+    		{ data: 'valor_dolares_dos', orderable: false },
+    		{ data: 'cc_provision_acum_capital', orderable: false },
+    		{ data: 'valor_dolares_tres', orderable: false },
+    		{ data: 'cc_provision_acum_rendimiento', orderable: false },
+    		{ data: 'valor_dolares_cuatro', orderable: false },
+    		{ data: 'valor_liquidado', orderable: false },
+    		{ data: 'fecha_liquidacion', orderable: false },
+    		{ data: 'precio_liquidacion', orderable: false },
+    		{ data: 'valor_liquidacion', orderable: false },
+    		{ data: 'motivo_liquidacion', orderable: false },    		
     		{ data: 'opciones', orderable: false }
     		
 	    ],
@@ -366,12 +408,10 @@ var load_inversiones	= function(){
 	        {className: "dt-center", targets:[0] },
 	        {sortable: false, targets: [ 0,2,6,7,8] }
 	      ],
-		'scrollY': "80vh",
-        'scrollCollapse':true,
-        'fixedHeader': {
-            header: true,
-            footer: true
-        },
+	    sScrollY: "600",
+	    sScrollX: " 100% ",
+	    sScrollXInner:" 200% ",
+	    bScrollCollapse: true,
         dom: "<'row'<'col-sm-6'<'box-tools pull-right'B>>><'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'<'#colvis'>p>>",
         buttons: [
         	{ "extend": 'excelHtml5',  "titleAttr": 'Excel', "text":'<span class="fa fa-file-excel-o fa-2x fa-fw"></span>',"className": 'no-padding btn btn-default btn-sm' }
@@ -382,11 +422,11 @@ var load_inversiones	= function(){
 }
 
 
-var fn_insertar_inversiones	= function(){
+var fn_insertar_saldos_inversiones	= function(){
 	
 	let validador = true;
 	let parametros	= {};
-	
+	/*
 	if( view.tipo_identificacion.val() == '0' ){
 		view.tipo_identificacion.notify("Selecione Tipo Identificación",{position:"buttom left", autoHideDelay: 2000});
 		validador = false;		
@@ -532,8 +572,50 @@ var fn_insertar_inversiones	= function(){
 		validador = false;
 		return false;
 	}
-	parametros.estado_registro	= view.estado_registro.val();	
-	
+	parametros.estado_registro	= view.estado_registro.val();	*/
+		
+	parametros.id_ingreso_inversiones = view.id_ingreso_inversiones.val();
+	parametros.estado_inversion = view.estado_inversion.val();
+	parametros.rango_vencimiento = view.rango_vencimiento.val();
+	parametros.valor_contable = view.valor_contable.val();
+	parametros.tasa_nominal = view.tasa_nominal.val();
+	parametros.tasa_cupon = view.tasa_cupon.val();
+	parametros.fecha_ult_cupon = view.fecha_ult_cupon.val();
+	parametros.precio_compra_porcentaje = view.precio_compra_porcentaje.val();
+	parametros.valor_efectivo = view.valor_efectivo.val();
+	parametros.rendimiento_porcentaje = view.rendimiento_porcentaje.val();
+	parametros.precio_anio_renta_fija = view.precio_anio_renta_fija.val();
+	parametros.interes_acumulado_cobrar = view.interes_acumulado_cobrar.val();
+	parametros.monto_generados_interes = view.monto_generados_interes.val();
+	parametros.valor_mercado = view.valor_mercado.val();
+	parametros.numero_acciones_corte = view.numero_acciones_corte.val();
+	parametros.precio_mercado_actual = view.precio_mercado_actual.val();
+	parametros.precio_mercado_hace_anio = view.precio_mercado_hace_anio.val();
+	parametros.dividendo_accion = view.dividendo_accion.val();
+	parametros.codigo_vecto_precio = view.codigo_vecto_precio.val();
+	parametros.calificacion_emisor = view.calificacion_emisor.val();
+	parametros.calificacion_riesgos = view.calificacion_riesgos.val();
+	parametros.fecha_ultima_calificacion = view.fecha_ultima_calificacion.val();
+	parametros.provision_constituida = view.provision_constituida.val();
+	parametros.estado_vencimiento = view.estado_vencimiento.val();
+	parametros.valor_nominal_vencido = view.valor_nominal_vencido.val();
+	parametros.interes_acumulado_cobrar_vencido = view.interes_acumulado_cobrar_vencido.val();	
+	parametros.numero_cuotas_vencidas = view.numero_cuotas_vencidas.val();
+	parametros.cuenta_contable_cap_vencido = view.cuenta_contable_cap_vencido.val();
+	parametros.valor_dolares = view.valor_dolares.val();
+	parametros.cuenta_contable_ren_vencido = view.cuenta_contable_ren_vencido.val();
+	parametros.valor_dolares_dos = view.valor_dolares_dos.val();
+	parametros.cuenta_contable_provision_acumulada_capital = view.cuenta_contable_provision_acumulada_capital.val();
+	parametros.valor_dolares_tres = view.valor_dolares_tres.val();	
+	parametros.cuenta_contable_provision_acumulada_rendimiento = view.cuenta_contable_provision_acumulada_rendimiento.val();
+	parametros.valor_dolares_cuatro = view.valor_dolares_cuatro.val();
+	parametros.valor_liquidado = view.valor_liquidado.val();
+	parametros.fecha_liquidacion = view.fecha_liquidacion.val();
+	parametros.precio_liquidacion = view.precio_liquidacion.val();
+	parametros.valor_liquidacion = view.valor_liquidacion.val();
+	parametros.motivo_liquidacion = view.motivo_liquidacion.val(); 
+	 
+		
 	/** 2do Envio peticion a Servidor **/
 	if( validador ){
 				
@@ -546,6 +628,17 @@ var fn_insertar_inversiones	= function(){
 			data:parametros
 		}).done(function(x){
 			
+			if( x.estatus == 'OK' ){				
+				swal({ title:"INVERSIONES",
+					text:'Inversión Ingresada',
+					icon:'success'
+				});
+			}else{
+				swal({ title:"INVERSIONES",
+					text:'Problemas al ingresar inversiones',
+					icon:'error'
+				});
+			}
 			console.log(x);
 			
 		}).fail(function(xhr, status, error){

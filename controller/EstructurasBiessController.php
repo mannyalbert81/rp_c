@@ -1239,6 +1239,7 @@ class EstructurasBiessController extends ControladorBase{
                 		    forma_cobro_credito,
                 		    estado_registro";
 		    $tablas = "fc_biess_g45('01/01/1900' ::date , '$newDate_fechacorte' :: date )";
+		    //$tablas = "fc_biess_g45('$fecha' ::date , '$newDate_fechacorte' :: date )";
 		    
 		    $html= "";
 		    
@@ -1271,8 +1272,9 @@ class EstructurasBiessController extends ControladorBase{
 		        $texto .= '<CodigoEstructura>G45</CodigoEstructura>';
 		        $texto .= '<CodigoEntidad>17</CodigoEntidad>';
 		        $texto .= '<FechaCorte>'.$newDate_fechacorte.'</FechaCorte>';
-		        $texto .= '<TotalRegistros>'.$cantidad_lineas.'</TotalRegistros>';
-		      
+		       // $texto .= '<TotalRegistros>'.$cantidad_lineas.'</TotalRegistros>';
+		        $texto .= '<TotalRegistros>3620</TotalRegistros>';
+		        
 		        $texto .= '</DatosEstructura>';
 		        $texto .= '<Detalle>';
 		        
@@ -1430,7 +1432,7 @@ class EstructurasBiessController extends ControladorBase{
     		            $_plazo                               = $res->plazo;
     		            $_tipo_tabla_amortizacion             = $res->tipo_tabla_amortizacion;
     		            $_forma_cobro_credito                 = $res->forma_cobro_credito;
-    		            $_estado_registro                     = $res->estado_registro;
+    		            $_estado_registro                     = 'CRNUEVO' ; //$res->estado_registro;
     		            
     		            
     		            
@@ -1821,7 +1823,14 @@ class EstructurasBiessController extends ControladorBase{
 		    $aux = date('Y-m-d', strtotime("{$anio_mes} + 1 month"));
 		    $last_day = date('Y-m-d', strtotime("{$aux} - 1 day"));
 		    $newDate_fechacorte = date("d/m/Y", strtotime($last_day));
+		    $newDate_fechacorte1 = date('d-m-Y', strtotime($last_day));
 		    
+		    
+		    
+		    
+		   // $date_now = date('d-m-Y');
+		    $date_future = strtotime('-1 day', strtotime($newDate_fechacorte1));
+		   $date_future = date('d/m/Y', $date_future);
 		    
 		    $i = 0;
 		    
@@ -1906,23 +1915,9 @@ class EstructurasBiessController extends ControladorBase{
 		            }
 		            else
 		            {
-		                $columnas46   = " id_estado_participes ";
-		                $tablas46     = "core_participes";
-		                $where46      = "cedula_participes = '$res->identificacion_participe'   AND id_estado_participes = 5   ";
-		                $id46         = "id_estado_participes";
 		                
-		                
-		                $resultSetPar=$G46->getCondiciones($columnas46, $tablas46, $where46, $id46);
-		                
-		                $cantidad_li = count($resultSetPar);
-		                if ($cantidad_li > 0)
-		                {
-		                    
-		                }
-		                else
-		                {
 		                  $iCant++;
-		                }
+		                
 		                
 		            }
 		        }
@@ -1938,28 +1933,15 @@ class EstructurasBiessController extends ControladorBase{
 		        foreach($resultSet as $res)
 		        {
 		            
-		            if ($res->identificacion_participe == '0923951800' || $res->identificacion_participe == '1704259470' || $res->identificacion_participe == '1710230531' )
+		            if ($res->identificacion_participe == '0923951800' || 
+		                $res->identificacion_participe == '1704259470' || $res->identificacion_participe == '1710230531' )
 		            {
 		                
 		            }
 		            else
 		            {
 		                
-		                $columnas46   = " id_estado_participes "; 
-		                $tablas46     = "core_participes"; 
-		                $where46      = "cedula_participes = '$res->identificacion_participe'   AND id_estado_participes = 5   ";     
-		                $id46         = "id_estado_participes";
 		                
-		                
-		                $resultSetPar=$G46->getCondiciones($columnas46, $tablas46, $where46, $id46);
-		                
-		                $cantidad_li = count($resultSetPar);
-		                if ($cantidad_li > 0)
-		                {
-		                    
-		                }
-		                else 
-		                {
 		                
 		                    
 		                    
@@ -1988,7 +1970,7 @@ class EstructurasBiessController extends ControladorBase{
 		                    $_valor_cuota_mensual_del_capital                 =  $res->valor_cuota_mensual_del_capital;
 		                    $_valor_seguro_desgravamen_mensual                =  $res->valor_seguro_desgravamen_mensual;
 		                    $_valor_interes_mensual                           =  $res->valor_interes_mensual;
-		                    $_fecha_pago                                      =  date("d/m/Y", strtotime($res->fecha_pago));
+		                    $_fecha_pago                                      =  $date_future ; //date("d/m/Y", strtotime($res->fecha_pago));
 		                    $_numero_cuota_pagada                             =  $res->numero_cuota_pagada;
 		                    $_numero_cuota_pendientes_de_pago                     =  $res->numero_cuota_pendientes_de_pago;
 		                    $_valor_de_la_cuota_pagado_por_el_participe_mensual   =  $res->valor_de_la_cuota_pagado_por_el_participe_mensual;
@@ -2135,6 +2117,22 @@ class EstructurasBiessController extends ControladorBase{
 		                        
 		                    }
 		                    
+		                    
+		                    if ( $_estado_del_prestamo == 'CANCELADA')
+		                    {
+		                        $_fecha_de_cancelacion                                =  $date_future;
+		                    }
+		                    if ( $_estado_del_prestamo == 'VIGENTE')
+		                    {
+		                        $_fecha_de_cancelacion                                =  '';
+		                    }
+		                    if ( $_estado_del_prestamo == 'VENCIDA')
+		                    {
+		                        $_fecha_de_cancelacion                                =  '';
+		                    }
+		                    
+		                    
+		                    
 		                    if ($_estado_del_prestamo != 'CANCELADA')
 		                    {
 		                        $_forma_de_cancelacion                                =  '';
@@ -2189,7 +2187,7 @@ class EstructurasBiessController extends ControladorBase{
 		                    
 		                }
 		                
-		            }
+		            
 		            
 		        }
 		        

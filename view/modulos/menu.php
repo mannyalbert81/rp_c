@@ -48,7 +48,7 @@ $controladores=$_SESSION['controladores'];
 
 
 
-   <ul class="sidebar-menu" data-widget="tree">
+   <ul class="sidebar-menu"  data-widget="tree">
 
        <li class="header">MAIN NAVIGATION</li>
 
@@ -1662,7 +1662,11 @@ $controladores=$_SESSION['controladores'];
                	<li style="<?php echo getcontrolador("inv_ingreso",$controladores) ?>"><a href="index.php?controller=IngresoInversionesG2&action=index"><i class="fa fa-circle-o"></i>Ingreso Inversiones</a></li>
 
                	<li style="<?php echo getcontrolador("inversiones_saldos",$controladores) ?>"><a href="index.php?controller=SaldosInversiones&action=index"><i class="fa fa-circle-o"></i>Saldos Inversiones</a></li>
-
+				
+				<li style="<?php echo getcontrolador("SaldosBancarios",$controladores) ?>"><a href="index.php?controller=SaldosBancarios&action=index_semanales"><i class="fa fa-circle-o"></i>Saldos Bancarios Semanales</a></li>
+				
+				<li style="<?php echo getcontrolador("SaldosBancarios",$controladores) ?>"><a href="index.php?controller=SaldosBancarios&action=index_mensuales"><i class="fa fa-circle-o"></i>Saldos Bancarios Mensuales</a></li>
+				
       	        
 
       	  	</ul>

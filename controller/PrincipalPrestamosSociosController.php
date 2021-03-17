@@ -1093,7 +1093,8 @@ class PrincipalPrestamosSociosController extends ControladorBase{
 	        
             $tipo_credito = $rs_Consulta1[0]->id_tipo_creditos;
 	        
-	        $paramsQuery   = " $id_creditos, '$fecha_reporte', 1000000 ";
+            $pago_parcial_total = 1; #IMPORTANTE parcial = 0 ; total = 1
+	        $paramsQuery   = " $id_creditos, '$fecha_reporte', 1000000 , '$pago_parcial_total' ";
             $functionquery = " SELECT id_tabla_amortizacion_parametrizacion_out, valor_out FROM fc_simular_pago_credito_por_fecha($paramsQuery)";
 	        
             $rs_function   = $creditos->enviaquery( $functionquery );

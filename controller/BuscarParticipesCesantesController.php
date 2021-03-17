@@ -135,7 +135,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
                     ON core_participes.id_estado_civil_participes=core_estado_civil_participes.id_estado_civil_participes
                     INNER JOIN core_genero_participes
                     ON core_genero_participes.id_genero_participes = core_participes.id_genero_participes";
-    
+        
         $where="core_participes.cedula_participes='".$cedula."'";
         
         $id="core_participes.id_participes";
@@ -148,33 +148,33 @@ class BuscarParticipesCesantesController extends ControladorBase{
         {if($resultSet[0]->nombre_genero_participes == "HOMBRE") $icon='<i class="fa fa-male fa-3x" style="float: left;"></i>';
         else $icon='<i class="fa fa-female fa-3x" style="float: left;"></i>';
         /*
-        $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
-            		core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
-            		core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
-            		core_estado_creditos.nombre_estado_creditos";
-        $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
-        		ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
-        		INNER JOIN public.core_estado_creditos
-        		ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
-        $where="core_creditos.id_participes=".$resultSet[0]->id_participes." AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
-        $id="core_creditos.fecha_concesion_creditos";
-        
-        $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
-        */
+         $columnas="core_creditos.id_creditos,core_creditos.numero_creditos, core_creditos.fecha_concesion_creditos,
+         core_tipo_creditos.nombre_tipo_creditos, core_creditos.monto_otorgado_creditos,
+         core_creditos.saldo_actual_creditos, core_creditos.interes_creditos,
+         core_estado_creditos.nombre_estado_creditos";
+         $tablas="public.core_creditos INNER JOIN public.core_tipo_creditos
+         ON core_creditos.id_tipo_creditos = core_tipo_creditos.id_tipo_creditos
+         INNER JOIN public.core_estado_creditos
+         ON core_creditos.id_estado_creditos = core_estado_creditos.id_estado_creditos";
+         $where="core_creditos.id_participes=".$resultSet[0]->id_participes." AND core_creditos.id_estatus=1 AND core_creditos.id_estado_creditos=4";
+         $id="core_creditos.fecha_concesion_creditos";
+         
+         $resultCreditos=$participes->getCondiciones($columnas, $tablas, $where, $id);
+         */
         
         
         $html.='
         <div class="box box-widget widget-user-2">';
-     	 //  if(!(empty($resultCreditos))) 
-      
+        //  if(!(empty($resultCreditos)))
+        
         $html.='';
         $html.='<div class="widget-user-header bg-aqua">'
             .$icon.
             '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>
-            
+                
          <h5 class="widget-user-desc">Estado: '.$resultSet[0]->nombre_estado_participes.'</h5>
         <h5 class="widget-user-desc">CI: '.$resultSet[0]->cedula_participes.'</h5>
-        
+            
         </div>
         <div class="box-footer no-padding">
         <ul class="nav nav-stacked">
@@ -184,7 +184,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         <td>'.$resultSet[0]->ocupacion_participes.'</td>
         <th>Fecha Ingreso:</th>
         <td>'.$resultSet[0]->fecha_ingreso_participes.'</td>
-        </tr>  
+        </tr>
         <tr>
         <th>Estado Civil:</th>
         <td>'.$resultSet[0]->nombre_estado_civil_participes.'</td>
@@ -206,7 +206,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
         <tr >
         <th>Dirección:</th>
         <td colspan="3">'.$resultSet[0]->direccion_participes.'</td>
-                
+            
         </tr>
         </table>
         </ul>
@@ -243,9 +243,11 @@ class BuscarParticipesCesantesController extends ControladorBase{
         $participes= new ParticipesModel();
     
         
+        
         if ($_id_tipo_prestaciones == 2)
-        {
-		        $columnas="COALESCE(sum(c.valor_personal_contribucion),0) aporte_personal_100, 
+        {            
+           
+		        $columnas="COALESCE(sum(c.valor_personal_contribucion+ c.valor_patronal_contribucion),0) aporte_personal_100, 
 							(coalesce(sum(c.valor_personal_contribucion),0)/2) aporte_personal_50,
 							(select COALESCE(sum(c1.valor_personal_contribucion),0)  from core_contribucion c1 where c1.id_participes=".$id_participe." and c1.id_contribucion_tipo=5 and c1.id_estatus=1) as retroactivo_personal_100,
 							(select (coalesce(sum(c2.valor_personal_contribucion),0)/2)  from core_contribucion c2 where c2.id_participes=".$id_participe." and c2.id_contribucion_tipo=5 and c2.id_estatus=1) as retroactivo_personal_50,
@@ -346,7 +348,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
 		               ';
 		                
 		                
-		                // CONSULTO LOS CREDITOS DE LOS PARTICIPES
+		                #CONSULTO LOS CREDITOS DE LOS PARTICIPES
 		                $columnas="bb.fecha_concesion_creditos, bb.id_creditos,bb.id_tipo_creditos, tc.nombre_tipo_creditos, tc.codigo_tipo_creditos";
 		                $tablas="core_participes aa
 		                inner join core_creditos bb on bb.id_participes = aa.id_participes
@@ -480,7 +482,7 @@ class BuscarParticipesCesantesController extends ControladorBase{
 		               }
 		                
 		                
-		         }else{
+		            }else{
 		           $html.='<div class="col-lg-12 col-md-12 col-xs-12">';
 		           $html.='<div class="alert alert-info alert-dismissable" style="margin-top:40px;">';
 		           $html.='<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
@@ -492,6 +494,12 @@ class BuscarParticipesCesantesController extends ControladorBase{
 	            echo $html;
 	            
 	        }
+        }else if( $_id_tipo_prestaciones == 1 ){
+                       
+            $html = $this->ValoresCesantia($id_participe);
+            
+            echo $html;
+            
         }
       
         
@@ -2728,6 +2736,615 @@ class BuscarParticipesCesantesController extends ControladorBase{
     
 	
 	*/
+    
+    public function ValoresCesantia($id = null){
+        
+        $html = "";
+        
+        if( $id == null ) return "<error>";
+        
+        $id_participe   = $id;
+        $cesantia   = new CesantiasModel();
+        
+        $col1   = " coalesce( sum(valor_personal_contribucion), 0 ) as aporte_personal,
+            ( select coalesce( sum(valor_personal_contribucion), 0 )
+            from core_contribucion
+            where id_estatus = 1
+            and id_participes = $id_participe and id_contribucion_tipo = 9 ) as interes_personal,
+            ( select coalesce( sum(valor_personal_contribucion), 0 )
+            from core_contribucion
+            where id_estatus = 1
+            and id_participes = $id_participe and id_contribucion_tipo = 7 ) as exedente_personal,
+			( select coalesce( sum(valor_personal_contribucion), 0 )
+            from core_contribucion
+            where id_estatus = 1
+            and id_participes = $id_participe and id_contribucion_tipo = 50 ) as superavit_personal,
+            ( select coalesce( sum(valor_personal_contribucion), 0 )  
+        	from core_contribucion
+        	where id_estatus = 1 
+        	and id_participes = $id_participe and id_contribucion_tipo = 10 ) as ir_superavit_personal,
+            ( select coalesce( sum(valor_personal_contribucion), 0 )
+            from core_contribucion
+            where id_estatus = 1
+            and id_participes = $id_participe and id_contribucion_tipo = 5 ) as retroactivo_personal,
+            ( select coalesce( sum(valor_patronal_contribucion), 0 ) 
+            from core_contribucion
+            where id_estatus = 1
+            and id_participes = $id_participe and id_contribucion_tipo = 3 ) as aporte_patronal,
+            ( select coalesce( sum(valor_patronal_contribucion), 0 ) 
+            from core_contribucion
+            where id_estatus = 1
+            and id_participes = $id_participe and id_contribucion_tipo = 2 ) as interes_patronal,
+            ( select coalesce( sum(valor_patronal_contribucion), 0 ) 
+            from core_contribucion
+            where id_estatus = 1
+            and id_participes = $id_participe and id_contribucion_tipo = 8 ) as exedente_patronal,
+            ( select coalesce( sum(valor_patronal_contribucion), 0 ) 
+            from core_contribucion
+            where id_estatus = 1
+            and id_participes = $id_participe and id_contribucion_tipo = 49 ) as superavit_patronal,
+            ( select coalesce( sum(valor_patronal_contribucion), 0 ) 
+        	from core_contribucion
+        	where id_estatus = 1 
+        	and id_participes = $id_participe and id_contribucion_tipo = 12 ) as ir_superavit_patronal,
+            ( select coalesce( sum(valor_patronal_contribucion), 0 )
+            from core_contribucion
+            where id_estatus = 1
+            and id_participes = $id_participe and id_contribucion_tipo = 6 ) as retroactivo_patronal,
+            (select to_char(c5.fecha_registro_contribucion,'TMMONTH/YYYY') imposicion_desde
+            from core_contribucion c5
+            where c5.id_participes= $id_participe and c5.id_estatus=1 order by id_contribucion asc limit 1),
+            (select to_char(c5.fecha_registro_contribucion,'TMMONTH/YYYY') imposicion_hasta
+            from core_contribucion c5
+            where c5.id_participes= $id_participe and c5.id_estatus=1  order by id_contribucion desc limit 1)";							
+        $tab1   = "core_contribucion c inner join  core_participes p on c.id_participes=p.id_participes";
+        $whe1   = "p.id_participes=".$id_participe." and c.id_estatus=1 and c.id_contribucion_tipo=1";
+        $id1    = " 1";
+        
+        $rsCesantias = $cesantia->getCondiciones($col1, $tab1, $whe1, $id1);
+                
+        if(empty($rsCesantias))  return "";
+            
+        $SumaValores    = 0;
+        $valor_superavit_patronal   = 0;
+        foreach ($rsCesantias as $res)
+        {
+            
+            $SumaValores =  (($res->aporte_personal)/2) + (($res->interes_personal)/2) + (($res->exedente_personal)/2) + (($res->superavit_personal)/2);
+            
+            $_imposiciones_desde=$res->imposicion_desde;
+            $_imposiciones_hasta=$res->imposicion_hasta;
+            
+            $aporte_personal    = ($res->aporte_personal);
+            $aporte_personal_format    = number_format( (float) ($aporte_personal) , 2, ',', '.');
+            $retroactivo_personal   = $res->retroactivo_personal;
+            $retroactivo_personal_format    = number_format((float) ($retroactivo_personal), 2, ',', '.');
+            $excedente_por_aporte_personal  = $res->exedente_personal;
+            $excedente_por_aporte_personal_format  = number_format((float) ($excedente_por_aporte_personal), 2, ',', '.');
+            $interes_por_aporte_personal    = $res->interes_personal;
+            $interes_por_aporte_personal_format    = number_format((float) ($interes_por_aporte_personal), 2, ',', '.');
+            //$impuesto_superavit_personal=number_format((float)$res->ir_superavit_personal, 2, ',', '.');
+            $superavit_aporte_personal  = ($res->superavit_personal) - abs($res->ir_superavit_personal);
+            $superavit_aporte_personal_format  = number_format((float) ( $superavit_aporte_personal ), 2, ',', '.');
+            
+            $SumaValoresPersonales =  $aporte_personal + $retroactivo_personal + $excedente_por_aporte_personal + $interes_por_aporte_personal + $superavit_aporte_personal;
+            
+            $aporte_patronal    = ($res->aporte_patronal);
+            $retroactivo_patronal   = $res->retroactivo_patronal;
+            $excedente_por_aporte_patronal  = ($res->exedente_patronal);
+            $interes_por_aporte_patronal    = ($res->interes_patronal);
+            $superavit_aporte_patronal  = ($res->superavit_patronal);
+            $aporte_patronal_format    = number_format( (float) ($aporte_patronal) , 2, ',', '.');            
+            $retroactivo_patronal_format   = number_format((float) $retroactivo_patronal, 2, ',', '.');            
+            $excedente_por_aporte_patronal_format  = number_format((float) ($excedente_por_aporte_patronal), 2, ',', '.');            
+            $interes_por_aporte_patronal_format    = number_format((float) ($interes_por_aporte_patronal), 2, ',', '.');            
+            $superavit_aporte_patronal_format  = number_format((float) ($superavit_aporte_patronal), 2, ',', '.');
+            
+            $SumaValoresPatronales =  $aporte_patronal + $retroactivo_patronal + $excedente_por_aporte_patronal + $interes_por_aporte_patronal + $superavit_aporte_patronal;
+            $valor_superavit_patronal   = ($res->superavit_patronal);
+            $total_prestacion   = $SumaValoresPersonales + $SumaValoresPatronales;
+            
+            $SumaValores = $total_prestacion;
+        }
+            
+            $html='<div >
+                <div >
+                <h3 class="box-title"><b>SIMULACIÓN: CÁLCULO DE CESANTIA</b></h3>
+                </div>
+                <div >
+                <div >
+                <h5><b>IMPOSICIONES DESDE:</b> '.$_imposiciones_desde.'<b> HASTA:</b> '.$_imposiciones_hasta.'</h5>
+                </div>
+                <div style="align-content: center;">
+                <table  border="1" width="70%">
+                <tr >
+                <th></th>
+                </tr>';
+                        
+            if( $aporte_personal > 0 ){                
+                $html .=' <tr>
+                    	<td width="70%" >Aporte Personal</td>
+                    	<td style="text-align: right;"  width="30%"><span id="lblAportePersonal"> $ '.$aporte_personal_format.'</span></td>
+                    </tr>';
+            }
+            
+            if( $retroactivo_personal > 0 ){
+                $html .=' <tr>
+                    	<td width="70%" >Retroactivo Personal</td>
+                    	<td style="text-align: right;"  width="30%"><span id="lblAportePersonal"> $ '.$retroactivo_personal_format.'</span></td>
+                    </tr>';
+            }
+            
+            if( $excedente_por_aporte_personal > 0 ){
+                $html .=' <tr>
+                    	<td width="70%" >Excedente por Aporte Personal</td>
+                    	<td style="text-align: right;"  width="30%"><span id="lblAportePersonal"> $ '.$excedente_por_aporte_personal_format.'</span></td>
+                    </tr>';
+            }
+            
+            if( $interes_por_aporte_personal > 0 ){
+                $html .=' <tr>
+                	<td width="70%" >Interés Aporte Personal </td>
+                	<td style="text-align: right;"  width="30%"><span id="lblInteresAportePersonal"> $ '.$interes_por_aporte_personal_format.'</span></td>
+                </tr>';
+            }
+            
+            if( $superavit_aporte_personal > 0 ){
+                $html .='  <tr >
+                	<td >Superavit por Aporte Personal</td>
+                	<td style="text-align: right;"><span id="lblSuperavitAportePersonal"> $ '.$superavit_aporte_personal_format.'</span></td>
+                </tr>';
+            }
+                             
+            $html .='<tr>
+            	<th >Total  Aporte Personal</th>
+            	<td style="text-align: right;"><span id="lblTotalSuma"><b> $ '.number_format((float)$SumaValoresPersonales, 2, ',', '.').'</b></span></td>
+            </tr>';
+            
+            if( $aporte_patronal > 0 ){
+                $html .='<tr>
+                	<td width="70%" >Aporte Patronal</td>
+                	<td style="text-align: right;"  width="30%"><span id="lblAportePersonal"> $ '.$aporte_patronal_format.'</span></td>
+                </tr>';
+            }
+            
+            if( $retroactivo_patronal > 0 ){
+                $html .=' <tr>
+                	<td width="70%" >Retroactivo Patronal </td>
+                	<td style="text-align: right;"  width="30%"><span id="lblExcedenteAportePersonal"> $ '.$retroactivo_patronal_format.'</span></td>
+                </tr>';
+            }
+            
+            if( $excedente_por_aporte_patronal > 0 ){
+                $html .=' <tr>
+                	<td width="70%" >Excedente por Aporte Patronal </td>
+                	<td style="text-align: right;"  width="30%"><span id="lblExcedenteAportePersonal"> $ '.$excedente_por_aporte_patronal_format.'</span></td>
+                </tr>';
+            }
+            
+            if( $interes_por_aporte_patronal > 0 ){
+                $html .=' <tr>
+                	<td width="70%" >Interés Aporte Patronal </td>
+                	<td style="text-align: right;"  width="30%"><span id="lblInteresAportePersonal"> $ '.$interes_por_aporte_patronal_format.'</span></td>
+                </tr>';
+            }
+            
+            if( $superavit_aporte_patronal > 0 ){
+                $html .=' <tr >
+                	<td >Superavit por Aporte Patronal</td>
+                	<td style="text-align: right;"><span id="lblSuperavitAportePersonal"> $ '.$superavit_aporte_patronal_format.'</span></td>
+                </tr>';
+            }
+            
+           $html .='<tr >
+                	<th >Total  Aporte Patronal</th>
+                	<td style="text-align: right;"><span id="lblTotalSuma"><b> $ '.number_format((float)$SumaValoresPatronales, 2, ',', '.').'</b></span></td>
+                </tr>
+                <tr >
+                	<th >TOTAL PRESTACION</th>
+                	<td style="text-align: right;"><span id="lblTotalSuma"><b> $ '.number_format((float)$total_prestacion, 2, ',', '.').'</b></span></td>
+                </tr>
+                </table>
+                </div>
+                </div>';
+            
+            #Ingresar a ver descuentos
+            $html.=' <div > <h5 ><b>DESCUENTOS</b></h5> </div>';
+            
+            #VALORES DESCUENTOS
+            $totalDescuentos    = 0;
+            
+            if( $valor_superavit_patronal > 0 ){
+                
+                $impuesto_2_superavit_patronal  = $valor_superavit_patronal * (2/100);
+                
+                $html   .= '<table border="1" width="70%"> ';
+                $html   .= '<tr>
+                   			<td width="70%">Impuesto 2.00% Superavit Patronal</td>
+                   			<td style="text-align: right;" width="30%"><span id="lblCreditoOrdinario"> $ -'.number_format((float)$impuesto_2_superavit_patronal, 2, ',', '.').'</span></td>
+                   		  </tr>';
+                $html   .= '</table>';
+                
+                $totalDescuentos    += $impuesto_2_superavit_patronal;
+            }
+            
+            
+            
+            #Consulto creditos            
+            $col2  = " aa.id_creditos, aa.id_tipo_creditos, bb.nombre_tipo_creditos";
+            $tab2  = " public.core_creditos aa INNER JOIN public.core_tipo_creditos bb ON  bb.id_tipo_creditos = aa.id_tipo_creditos";
+            $whe2  = " aa.id_estado_creditos = 4 AND aa.id_estatus = 1 AND aa.id_participes = $id_participe"; 
+            $rs_Consulta2  = $cesantia->getCondicionesSinOrden($col2, $tab2, $whe2, "");
+            
+            $html_creditos  = "";
+            $valor_total_creditos   = 0;
+            
+            if( !empty($rs_Consulta2) ){
+                
+               
+                $html   .= '<table border="1" width="70%">'; 
+                
+                $arrayRespuestaCreditos = $this->obtenerCreditosParticipe($id_participe);
+                
+                if( !empty( $arrayRespuestaCreditos ) ){
+                    
+                    $numero_creditos    = $arrayRespuestaCreditos['numcreditos'];
+                    $valor_total_creditos   = $arrayRespuestaCreditos['valcreditos'];
+                    $html_creditos      = $arrayRespuestaCreditos['html'];
+                    
+                    $html.='<tr>
+                   			<td width="70%"> Total Creditos ('.$numero_creditos.')</td>
+                   			<td style="text-align: right;" width="30%"><span id="lblCreditoOrdinario"> $ -'.number_format((float)$valor_total_creditos, 2, ',', '.').'</span></td>
+                   		  </tr>';                    
+                    
+                }
+                
+                $totalDescuentos += $valor_total_creditos;
+                
+               
+                //foreach ( $rs_Consulta2 as $res ){
+                    
+                    //$nombre_tipo_creditos   = $res->nombre_tipo_creditos;
+                    //$fecha_reporte  = date('Y-m-d');
+                    //$id_creditos    = $res->id_creditos;
+                    //$paramsQuery   = " $id_creditos, '$fecha_reporte', 1000000, '1' ";
+                    
+                    //$col3  = " bb.descripcion_tabla_amortizacion_parametrizacion,id_tabla_amortizacion_parametrizacion_out, valor_out  ";
+                   // $tab3  = " fc_simular_pago_credito_por_fecha($paramsQuery) aa
+                    //INNER JOIN core_tabla_amortizacion_parametrizacion bb ON bb.id_tabla_amortizacion_parametrizacion = aa.id_tabla_amortizacion_parametrizacion_out";
+                    //$whe3  = " 1 = 1 ";
+                    
+                    //$totalparcial    = 0;
+                    //$rs_Consulta3  = $cesantia->getCondicionesSinOrden($col3, $tab3, $whe3, "");
+                    
+                    //foreach ( $rs_Consulta3 as $res3 ){
+                    //    $totalparcial   += $res3->valor_out;
+                    //}
+                    
+                    
+                    
+                    //$totalDescuentos    += $totalparcial;
+                    
+                    #para traer detalles de credito
+                    //$html_creditos  = $this->obtenerCreditosParticipe($id_participe);
+                //}
+                
+                $html.='<tr>
+                          <td ></td>
+	                      <td style="text-align: right;" ><button id="btn_pago_creditos" onclick="fn_cancelacion_prestamo()" class=" btn btn-info"><i class="fa fa-external-link-square"></i>  Pago Creditos</button></td>
+               		  </tr>';
+                
+                $total_recibir  = $SumaValores - $totalDescuentos;
+                                
+                $html.='<tr>
+		                      <th >TOTAL DESCUENTOS</th>
+		                      <td style="text-align: right;"><span id="lblTotalDescuentos"><b> $ '.number_format((float)$totalDescuentos, 2, ',', '.').'</b></span></td>
+		                </tr>
+		               </table>		                    			    
+                    	<div >
+			              <h5 ><b>RECIBIR</b></h5>
+			            </div>		                    			    
+		                <table border="1" width="70%">
+		                  <tr>
+                			<th width="70%">TOTAL A RECIBIR</th>
+                			<td style="text-align: right;" width="30%"> <font color="black"><span id="lblTotalRecibir"><b> $ '.number_format((float)$total_recibir, 2, ',', '.').'</b></span></font></td>
+                		  </tr>
+		                 </table>
+		                </div>';
+                
+                if( !empty($html_creditos) ){
+                    
+                    $html.= $html_creditos;
+                    
+                }
+                
+                if($total_recibir < 0 ){
+                    
+                    $total_pagar=$total_recibir*(-1);
+                    
+                    $html.='<div class="box box-solid bg-red" style = "margin-top:20px">
+		                    <div class="box-header with-border">
+		                    	<h3 class="box-title"><b>ALERTAS</b></h3>
+		                    </div>                        
+		                    <div>
+		                    	<h4>
+		                    		Estimado participe para poder acceder a la desafiliacion debe cubrir el monto adeudado en sus créditos a la fecha con el valor de: $ ' .number_format((float)$total_pagar, 2, ',', '.').
+		                    		'</h4>
+		                    </div>';
+                    
+                }
+                
+                
+            }
+               
+        
+        return $html;
+    }
+    
+    
+    /************************************************************************************************************************************************************/
+    public function ObtenerDatosParticipe()
+    {
+        session_start();
+        $cedula=$_POST['identificacion'];
+        $html="";
+        $participes= new ParticipesModel();
+        $icon="";
+        $respuesta= array();
+        
+        $columnas="core_estado_participes.nombre_estado_participes, core_participes.nombre_participes,
+                    core_participes.fecha_nacimiento_participes,
+                    core_participes.apellido_participes, core_participes.ocupacion_participes,
+                    core_participes.cedula_participes, core_entidad_patronal.nombre_entidad_patronal,
+                    core_participes.telefono_participes, core_participes.direccion_participes,
+                    core_estado_civil_participes.nombre_estado_civil_participes, core_genero_participes.nombre_genero_participes,
+                    DATE (core_participes.fecha_ingreso_participes)fecha_ingreso_participes, core_participes.celular_participes,
+                    core_participes.id_participes";
+        $tablas="public.core_participes INNER JOIN public.core_estado_participes
+                    ON core_participes.id_estado_participes = core_estado_participes.id_estado_participes
+                    INNER JOIN core_entidad_patronal
+                    ON core_participes.id_entidad_patronal = core_entidad_patronal.id_entidad_patronal
+                    INNER JOIN core_estado_civil_participes
+                    ON core_participes.id_estado_civil_participes=core_estado_civil_participes.id_estado_civil_participes
+                    INNER JOIN core_genero_participes
+                    ON core_genero_participes.id_genero_participes = core_participes.id_genero_participes";
+        
+        $where="core_participes.cedula_participes='".$cedula."'";
+        
+        $id="core_participes.id_participes";
+        
+        $resultSet=$participes->getCondiciones($columnas, $tablas, $where, $id);
+               
+        
+        if( !(empty($resultSet) ) ){ 
+            
+            if($resultSet[0]->nombre_genero_participes == "HOMBRE"){
+                $icon='<i class="fa fa-male fa-3x" style="float: left;"></i>';
+            }else{
+                $icon='<i class="fa fa-female fa-3x" style="float: left;"></i>';
+            }
+       
+        
+            $html.='
+            <div class="box box-widget widget-user-2">';
+            //  if(!(empty($resultCreditos)))
+            
+            $html.='';
+            $html.='<div class="widget-user-header bg-aqua">'
+                .$icon.
+                '<h3 class="widget-user-username">'.$resultSet[0]->nombre_participes.' '.$resultSet[0]->apellido_participes.'</h3>
+                    
+             <h5 class="widget-user-desc">Estado: '.$resultSet[0]->nombre_estado_participes.'</h5>
+            <h5 class="widget-user-desc">CI: '.$resultSet[0]->cedula_participes.'</h5>
+                
+            </div>
+            <div class="box-footer no-padding">
+            <ul class="nav nav-stacked">
+            <table align="right" class="tablesorter table table-striped table-bordered dt-responsive nowrap dataTables-example">
+            <tr>
+            <th>Cargo:</th>
+            <td>'.$resultSet[0]->ocupacion_participes.'</td>
+            <th>Fecha Ingreso:</th>
+            <td>'.$resultSet[0]->fecha_ingreso_participes.'</td>
+            </tr>
+            <tr>
+            <th>Estado Civil:</th>
+            <td>'.$resultSet[0]->nombre_estado_civil_participes.'</td>
+            <th>Fecha Nacimiento:</th>
+            <td>'.$resultSet[0]->fecha_nacimiento_participes.'</td>
+            </tr>
+            <tr>
+            <th>Sexo:</th>
+            <td>'.$resultSet[0]->nombre_genero_participes.'</td>
+            <th>Entidad Patronal:</th>
+            <td>'.$resultSet[0]->nombre_entidad_patronal.'</td>
+            </tr>
+            <tr>
+            <th>Telèfono:</th>
+            <td>'.$resultSet[0]->telefono_participes.'</td>
+            <th>Celular:</th>
+            <td>'.$resultSet[0]->celular_participes.'</td>
+            </tr>
+            <tr >
+            <th>Dirección:</th>
+            <td colspan="3">'.$resultSet[0]->direccion_participes.'</td>
+                
+            </tr>
+            </table>
+            </ul>
+            </div>
+            </div>';
+            
+                $respuesta['html']  = $html;
+                $respuesta['id_participes']  = $resultSet[0]->id_participes;
+                
+                echo json_encode($respuesta);
+                
+        }else{
+            
+            echo "<error>No existen datos<error>";
+        }
+        
+        
+    }
+    
+    /**
+     * *
+     * fn para obtener listado de creditos a renovar
+     * dc 2021-03-16
+     */
+    public function obtenerCreditosParticipe( $identificador = null, $fecha = null)
+    {
+        //session_start();
+        ob_start();
+        $id_participe = $identificador;
+        $fecha  = (is_null($fecha)) ? date('Y-m-d') : $fecha ;                 
+        $rp_capremci = new ParticipesModel();
+        
+        $respuesta  = array();
+        
+        $total = 0.00;
+        $html = '
+        <br>
+        <div class="letrasize11">
+        <table width="70%" border="1" class="table-condensed" >
+        <tr>
+        <th colspan="9" style="text-align:center">VALORES CREDITOS ADEUDADOS PARTICIPE</th>
+        </tr>
+        <tr>
+        <th >№ DE PRESTAMO</th>
+        <th >FECHA DE PRESTAMO</th>
+        <th >MONTO CREDITO</th>
+        <th >CAPITAL</th>
+        <th >INTERES</th>
+        <th >INT. POR MORA</th>
+        <th >OTROS</th>
+        <th>TIPO CREDITO</th>
+        <th >SALDO TOTAL</th>
+        </tr>';
+        
+        
+       
+        $columnas = 'aa.id_creditos, aa.numero_creditos, aa.fecha_concesion_creditos, cc.nombre_tipo_creditos, aa.monto_otorgado_creditos, aa.saldo_actual_creditos,
+            aa.interes_creditos, dd.nombre_estado_creditos';
+        $tablas = 'public.core_creditos aa
+            INNER JOIN public.core_participes bb ON bb.id_participes = aa.id_participes
+            INNER JOIN public.core_tipo_creditos cc ON cc.id_tipo_creditos = aa.id_tipo_creditos
+            INNER JOIN public.core_estado_creditos dd ON dd.id_estado_creditos = aa.id_estado_creditos';
+        
+        $where = " upper(dd.nombre_estado_creditos) = 'ACTIVO' AND aa.id_participes=" . $id_participe . " AND aa.id_estatus=1 ";
+        
+        
+        $rsCreditos = $rp_capremci->getCondicionesSinOrden($columnas, $tablas, $where, "");
+        
+        $count_creditos_renovar = 0;
+        $valcreditos    = 0;
+        
+        foreach ($rsCreditos as $res1) {
+            $count_creditos_renovar ++;
+            $total += $res1->saldo_actual_creditos;
+            //$saldo = number_format((float) $res1->saldo_actual_creditos, 2, '.', '');
+            $valor_parcial  = 0;
+            
+            #PARA TRAER VALORES TOTALES
+            //tipo pago 1 total -- 0 parcial
+            $tipo_pago  = 1;
+            $id_creditos    = $res1->id_creditos;
+            $col1   = 'SUM(CASE WHEN bb.tipo_tabla_amortizacion_parametrizacion = 0 THEN aa.valor_out ELSE 0 END) as capital,
+                SUM(CASE WHEN bb.tipo_tabla_amortizacion_parametrizacion = 1 THEN aa.valor_out ELSE 0 END) as interes,
+                SUM(CASE WHEN bb.tipo_tabla_amortizacion_parametrizacion = 7 THEN aa.valor_out ELSE 0 END) as mora,
+                SUM(CASE WHEN bb.tipo_tabla_amortizacion_parametrizacion = 8 THEN aa.valor_out ELSE 0 END) as otros';
+            $tab1   = "fc_simular_pago_credito_por_fecha('$id_creditos','$fecha',1000,'$tipo_pago') aa
+                INNER JOIN core_tabla_amortizacion_parametrizacion bb ON bb.id_tabla_amortizacion_parametrizacion = aa.id_tabla_amortizacion_parametrizacion_out";            
+            $whe1   = " 1 = 1 ";
+            
+            $rsDetalles = $rp_capremci->getCondicionesSinOrden($col1, $tab1, $whe1, "");
+            
+            //print_r( pg_last_error());
+            //die('error');
+           
+            
+            
+            $capital    = $interes  = $mora = $otros    = 0;
+            
+            if( !empty($rsDetalles) ){
+                
+                $capital    = $rsDetalles[0]->capital;
+                $interes    = $rsDetalles[0]->interes;
+                $mora       = $rsDetalles[0]->mora;
+                $otros      = $rsDetalles[0]->otros;
+                               
+            }          
+            
+            $valor_parcial = $capital + $interes + $mora + $otros;
+            
+            $html .= '<tr>
+             <td >' . $res1->numero_creditos . '</font></td>
+             <td >' . $res1->fecha_concesion_creditos . '</font></td>
+             <td >' . $res1->monto_otorgado_creditos . '</font></td>
+             <td >' . $capital . '</font></td>
+             <td >' . $interes . '</font></td>
+             <td >' . $mora . '</font></td>
+             <td >' . $otros . '</font></td>
+             <td>' . $res1->nombre_tipo_creditos . '</td>
+             <td align="right" class="ls_saldo_credito">' . $valor_parcial . '</font></td>
+            </tr>';
+            
+            $valcreditos += $valor_parcial;
+        }        
+        
+        $total = number_format((float) $valcreditos, 2, '.', '');
+        $html .= '<tr>
+        <th ></th>
+        <th ></th>
+        <th ></th>
+        <th ></th>
+        <th ></th>
+        <th ></th>
+        <th ></th>
+        <th >Total:</th>
+        <td align="right" id="total_saldo_renovar">' . $total . '</td>
+        </tr>';
+        
+        $html .= '</table> </div>';
+        
+        $respuesta['html']  = $html;
+        $respuesta['numcreditos']  = $count_creditos_renovar;
+        $respuesta['valcreditos']  = $valcreditos;
+                
+        $salida = ob_get_clean();
+        if (! empty($salida)) {
+            $respuesta = array();
+            
+        }
+        
+        return $respuesta;
+    }
+    
+    public function validarDatosCreditos(){
+        
+        session_start();
+        $prestaciones  = new PrestacionesModel();
+        
+        $respuesta  = array();
+        
+        try {
+            
+            $id_participe   = $_POST['id_participes'];
+            
+            if( !empty(error_get_last()) ) throw new Exception('parametro no definido');
+            
+            $col1   = "";
+            $tab1   = "";
+            $whe1   = "";
+            $id1    = "";
+
+        } catch (Exception $e) {
+        }
+        
+    }
+    
+    
 }
 
 

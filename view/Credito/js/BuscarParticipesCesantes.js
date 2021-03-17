@@ -122,12 +122,9 @@ function BuscarParticipe()
 
 
 function AportesParticipe(){
-	
-	
+		
 	var id_TipoPrestaciones = $("#id_tipo_prestaciones");
 	var fecha_prestaciones = $("#fecha_prestaciones");   
-	console.log(id_TipoPrestaciones.val() );
-	console.log(fecha_prestaciones.val() );
 	
 	if (id_TipoPrestaciones.val() == 0)
 	{
@@ -145,7 +142,9 @@ function AportesParticipe(){
 			fecha_prestaciones:fecha_prestaciones.val()}
 	}).done(function(datos){		
 
-		$("#aportes_participe_registrados").html(datos)		
+		$("#aportes_participe_registrados").html(datos);
+		
+		$("#dvbtn_opciones").removeClass('hide');
 		
 	}).fail(function(xhr,status,error){
 		
